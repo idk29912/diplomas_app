@@ -1,0 +1,111 @@
+{% extends "layout.html" %}
+{% block title %}Panel · Diplomas{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <!-- Registrar escuela -->
+  <div class="col-12 col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="mb-3">1) Registrar Escuela</h5>
+        <form method="post" class="row g-2">
+          <input type="hidden" name="action" value="create_school">
+          <div class="col-12">
+            <label class="form-label">Nombre oficial</label>
+            <input class="form-control" name="nombre" placeholder="Escuela Primaria..." required>
+          </div>
+          <div class="col-6">
+            <label class="form-label">CCT</label>
+            <input class="form-control" name="cct" placeholder="00XXX0000X" required>
+          </div>
+          <div class="col-6">
+            <label class="form-label">Turno</label>
+            <input class="form-control" name="turno" placeholder="Matutino">
+          </div>
+          <div class="col-6">
+            <label class="form-label">Director(a)</label>
+            <input class="form-control" name="director" placeholder="Nombre del director">
+          </div>
+          <div class="col-6">
+            <label class="form-label">Coordinador(a)</label>
+            <input class="form-control" name="coordinador" placeholder="Nombre del coordinador">
+          </div>
+          <div class="col-12 d-grid">
+            <button class="btn btn-primary">Guardar escuela</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Registrar curso -->
+  <div class="col-12 col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="mb-3">2) Registrar Curso</h5>
+        <form method="post" class="row g-2">
+          <input type="hidden" name="action" value="create_course">
+          <div class="col-12">
+            <label class="form-label">Nombre del curso</label>
+            <input class="form-control" name="c_nombre" placeholder="Computación Básica" required>
+          </div>
+          <div class="col-6">
+            <label class="form-label">Nivel</label>
+            <input class="form-control" name="c_nivel" placeholder="Inicial/Intermedio/Avanzado" required>
+          </div>
+          <div class="col-6">
+            <label class="form-label">Horas</label>
+            <input class="form-control" name="c_horas" placeholder="30" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Competencias</label>
+            <textarea class="form-control" name="c_competencias" placeholder="Uso básico de PC; Paint; Guardar archivos"></textarea>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Módulos</label>
+            <textarea class="form-control" name="c_modulos" placeholder="Intro PC; Teclado; Paint"></textarea>
+          </div>
+          <div class="col-12 d-grid">
+            <button class="btn btn-primary">Guardar curso</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cargar CSV y generar -->
+  <div class="col-12 col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="mb-3">3) Cargar CSV y Generar</h5>
+        {% if not has_school or not has_course %}
+          <div class="alert alert-warning">Primero registra al menos una escuela y un curso.</div>
+        {% endif %}
+        <form method="post" enctype="multipart/form-data" class="row g-2">
+          <input type="hidden" name="action" value="upload_csv">
+          <div class="col-12">
+            <label class="form-label">Escuela (ID)</label>
+            <input class="form-control" name="school_id" placeholder="1" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Curso (ID)</label>
+            <input class="form-control" name="course_id" placeholder="1" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Fecha (YYYY-MM-DD)</label>
+            <input class="form-control" name="fecha" placeholder="2025-07-10" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Archivo CSV</label>
+            <input class="form-control" type="file" name="csv" accept=".csv" required>
+          </div>
+          <div class="col-12 d-grid">
+            <button class="btn btn-success" {% if not has_school or not has_course %}disabled{% endif %}>Generar Diplomas</button>
+          </div>
+        </form>
+        <hr>
+        <p class="small text-muted">Formato CSV: <code>curp,nombre,grado,grupo</code></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

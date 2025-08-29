@@ -1,0 +1,8 @@
+﻿__pycache__/
+instance/
+*.db
+.env
+*.pyc
+.generated/
+generated/
+.vscode/

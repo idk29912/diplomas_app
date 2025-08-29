@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block title %}Login · Diplomas{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-md-6 col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h4 class="card-title text-center mb-3">Acceso administrativo</h4>
+        <p class="text-muted text-center mb-4">Ingresa la contraseña para acceder al panel.</p>
+        <form method="post" class="row g-3">
+          <div class="col-12">
+            <label class="form-label">Contraseña</label>
+            <input type="password" name="password" class="form-control" placeholder="••••••••" required autofocus>
+          </div>
+          <div class="col-12 d-grid">
+            <button class="btn btn-primary">Entrar</button>
+          </div>
+        </form>
+        <hr>
+        <div class="text-center">
+          <a href="/">← Ir al inicio</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

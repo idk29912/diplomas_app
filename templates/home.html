@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block title %}Inicio · Diplomas{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-12 col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h4 class="card-title mb-2">Consulta tu diploma</h4>
+        <p class="text-muted">Escribe tu CURP para buscar tu constancia digital.</p>
+        <form method="post" action="/lookup" class="row g-3">
+          <div class="col-12 col-md-8">
+            <label class="form-label">CURP</label>
+            <input class="form-control" name="curp" placeholder="BEXX991001HDFLLL01" required>
+          </div>
+          <div class="col-12 col-md-4 d-grid align-items-end">
+            <button class="btn btn-success">Buscar</button>
+          </div>
+        </form>
+        {% if error %}
+          <div class="alert alert-danger mt-3">{{ error }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-5">
+    <div class="card border-0 bg-light">
+      <div class="card-body">
+        <h5>¿Eres administrador?</h5>
+        <p class="text-muted">Genera diplomas por lotes y administra escuelas/cursos.</p>
+        <a href="/login" class="btn btn-outline-primary">Ir al login</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+diplomas_app/
+  app.py
+  models.py
+  requirements.txt
+  .env.example
+  /static
+    /logos/logo.png            # pon un logo (opcional)
+    /firmas/director.png       # firma PNG transparente
+    /firmas/coordinador.png    # firma PNG transparente
+  /templates
+    layout.html
+    home.html
+    login.html
+    upload.html
+    lookup.html
+    cert.html
+  /generated                   # se guardan PDFs
+  README.md

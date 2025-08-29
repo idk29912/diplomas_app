@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}Diploma de {{ rec.student.nombre }}{% endblock %}
+{% block content %}
+<div class="text-center mb-3">
+  <h3>{{ rec.school.nombre }} — {{ rec.course.nombre }} ({{ rec.course.nivel }})</h3>
+  <p class="text-muted">CCT: {{ rec.school.cct }} • Fecha: {{ rec.fecha }}</p>
+</div>
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-center mb-4">
+  <a class="btn btn-success" href="/cert/{{ rec.id }}/download.pdf">Descargar PDF</a>
+</div>
+
+<div class="alert {{ 'alert-success' if ok else 'alert-danger' }} text-center">
+  Verificación de integridad: <strong>{{ 'VÁLIDA' if ok else 'INVÁLIDA' }}</strong>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-8">
+    <ul class="list-group shadow-sm">
+      <li class="list-group-item"><strong>Alumno:</strong> {{ rec.student.nombre }} ({{ rec.student.curp }})</li>
+      <li class="list-group-item"><strong>Curso:</strong> {{ rec.course.nombre }} — Nivel {{ rec.course.nivel }} — {{ rec.course.horas }} horas</li>
+      <li class="list-group-item"><strong>Competencias:</strong> {{ rec.course.competencias }}</li>
+      <li class="list-group-item"><strong>Módulos:</strong> {{ rec.course.modulos }}</li>
+      <li class="list-group-item"><strong>Grado/Grupo:</strong> {{ rec.student.grado }} {{ rec.student.grupo }}</li>
+      <li class="list-group-item"><strong>Emite:</strong> {{ rec.school.nombre }} — CCT {{ rec.school.cct }} — Turno {{ rec.school.turno }}</li>
+      <li class="list-group-item"><strong>Responsables:</strong> {{ rec.school.director }} / {{ rec.school.coordinador }}</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

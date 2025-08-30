@@ -11,17 +11,42 @@ import qrcode
 from PIL import Image
 from urllib.parse import urlparse, urlunparse  # para limpiar UTM
 
+# =========================
+# Carga de entorno y paths
+# =========================
 load_dotenv()
-BASE_URL = os.getenv("BASE_URL", "http://localhost:5000")
-SECRET_KEY = os.getenv("SECRET_KEY", "dev")
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///diplomas.db")
 
+BASEDIR = os.path.abspath(os.path.dirname(__file__))
+
+# Carpeta para SQLite en producción (Railway/Render) y desarrollo
+INSTANCE_DIR = os.path.join(BASEDIR, "instance")
+os.makedirs(INSTANCE_DIR, exist_ok=True)
+
+# Carpeta donde se guardan los PDFs (puedes montarla como volumen en la nube)
+GEN_DIR = os.getenv("GEN_DIR", os.path.join(BASEDIR, "generated"))
+os.makedirs(GEN_DIR, exist_ok=True)
+
+# Variables de entorno con valores seguros por defecto
+BASE_URL      = os.getenv("BASE_URL", "http://localhost:5000")
+SECRET_KEY    = os.getenv("SECRET_KEY", "dev")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
+
+# Si no te pasan DATABASE_URL (p.ej., Postgres), usa SQLite en instance/
+DEFAULT_DB_URL = f"sqlite:///{os.path.join(INSTANCE_DIR, 'diplomas.db')}"
+DATABASE_URL   = os.getenv("DATABASE_URL", DEFAULT_DB_URL)
+
+# ============
+# Flask + DB
+# ============
 app = Flask(__name__)
 app.config["SECRET_KEY"] = SECRET_KEY
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
+
+# Garantiza que las tablas existan al arrancar (útil en Railway)
+with app.app_context():
+    db.create_all()
 
 # --- LIMPIA cualquier ?utm_* de las URLs ---
 @app.before_request
@@ -32,9 +57,9 @@ def strip_utm_params():
         clean = urlunparse(parts)
         return redirect(clean, code=302)
 
-GEN_DIR = os.path.join(os.path.dirname(__file__), "generated")
-os.makedirs(GEN_DIR, exist_ok=True)
-
+# ============
+# Utilidades
+# ============
 def make_qr(url):
     qr = qrcode.QRCode(box_size=5, border=2)
     qr.add_data(url)
@@ -50,13 +75,11 @@ def calc_hash(student, course, school, fecha):
     return hashlib.sha256(base.encode()).hexdigest()
 
 def draw_pdf(buf, diploma):
-    from reportlab.lib.utils import ImageReader
-    from reportlab.lib.colors import HexColor
     c = canvas.Canvas(buf, pagesize=A4)
     W, H = A4
 
     c.setFillColor(HexColor("#FFFFFF")); c.rect(0,0,W,H, fill=1, stroke=0)
-    c.setStrokeColor(HexColor("#0C4A6E")); c.setLineWidth(6); c.rect(20, 20, W-40, H-40)
+    c.setStrokeColor(HexColor("#9400F1")); c.setLineWidth(6); c.rect(20, 20, W-40, H-40)
 
     logo_path = os.path.join("static", "logos", "logo.png")
     if os.path.exists(logo_path):
@@ -102,6 +125,9 @@ def draw_pdf(buf, diploma):
 
     c.showPage(); c.save()
 
+# ============
+# Rutas
+# ============
 @app.route("/")
 def home():
     return render_template("home.html")
@@ -235,6 +261,7 @@ def upload():
     flash("Acción no reconocida.")
     return redirect(url_for("upload"))
 
+# Comando CLI para datos demo locales
 @app.cli.command("init-db")
 def init_db():
     with app.app_context():

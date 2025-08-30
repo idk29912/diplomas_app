@@ -1,28 +1,179 @@
 {% extends "layout.html" %}
-{% block title %}Consulta · Diplomas{% endblock %}
+{% block title %}Diplomas de Computación{% endblock %}
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-12 col-md-8 col-lg-6">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h4 class="card-title mb-2">Consulta de diploma</h4>
-        <p class="text-muted">Ingresa tu CURP y te llevaremos a tu constancia.</p>
-        <form method="post" class="row g-3">
-          <div class="col-12">
-            <label class="form-label">CURP</label>
-            <input class="form-control" name="curp" required>
-          </div>
-          <div class="col-12 d-grid">
-            <button class="btn btn-success">Buscar</button>
-          </div>
-          {% if error %}
-            <div class="col-12">
-              <div class="alert alert-danger">{{ error }}</div>
+
+<!-- Hero Section -->
+<section class="hero-section text-center mb-5 fade-in">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="hero-content">
+        <!-- Icono principal animado -->
+        <div class="hero-icon mb-4">
+          <div class="d-inline-flex align-items-center justify-content-center position-relative"
+               style="width: 120px; height: 120px; background: var(--gradient-primary); border-radius: 50%;">
+            <i class="fas fa-graduation-cap text-white" style="font-size: 3.5rem;"></i>
+            <!-- Elementos decorativos flotantes -->
+            <div class="floating-element" style="position: absolute; top: -10px; right: -10px;">
+              <i class="fas fa-star text-warning" style="font-size: 1.5rem; animation: pulse 2s infinite;"></i>
             </div>
-          {% endif %}
-        </form>
+            <div class="floating-element" style="position: absolute; bottom: -5px; left: -15px;">
+              <i class="fas fa-laptop text-info" style="font-size: 1.2rem; animation: pulse 2s infinite 0.5s;"></i>
+            </div>
+          </div>
+        </div>
+
+        <h1 class="display-4 fw-bold text-dark mb-3">
+          Sistema de <span class="text-gradient">Diplomas</span><br>
+          de Computación
+        </h1>
+        
+        <p class="lead text-muted mb-4 px-md-5">
+          Plataforma digital para la generación y consulta de constancias de capacitación en computación. 
+          Acceso rápido, seguro y verificable para estudiantes y administradores.
+        </p>
+
+        <!-- Botones principales -->
+        <div class="d-flex flex-column flex-md-row gap-3 justify-content-center mb-5">
+          <a href="/lookup" class="btn btn-success btn-lg hover-lift px-4 py-3">
+            <i class="fas fa-search me-2"></i>
+            Consultar mi Diploma
+          </a>
+          <a href="/login" class="btn btn-primary btn-lg hover-lift px-4 py-3">
+            <i class="fas fa-cog me-2"></i>
+            Panel Administrativo
+          </a>
+        </div>
       </div>
     </div>
   </div>
-</div>
-{% endblock %}
+</section>
+
+<!-- Características principales -->
+<section class="features-section mb-5">
+  <div class="row g-4">
+    <div class="col-12 text-center mb-4">
+      <h2 class="h3 fw-bold text-dark fade-in">¿Qué puedes hacer aquí?</h2>
+      <p class="text-muted fade-in">Descubre las funcionalidades de nuestra plataforma</p>
+    </div>
+
+    <!-- Para Estudiantes -->
+    <div class="col-12 col-lg-6">
+      <div class="card h-100 border-0 fade-in fade-in-delay-1">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center mb-3">
+            <div class="feature-icon me-3">
+              <i class="fas fa-user-graduate"></i>
+            </div>
+            <h5 class="card-title mb-0 fw-semibold">Para Estudiantes</h5>
+          </div>
+          
+          <p class="text-muted mb-4">
+            Accede fácilmente a tu constancia de capacitación y verifica su autenticidad.
+          </p>
+          
+          <div class="feature-list">
+            <div class="feature-item mb-3">
+              <i class="fas fa-check-circle text-success me-2"></i>
+              <span>Consulta rápida con tu CURP</span>
+            </div>
+            <div class="feature-item mb-3">
+              <i class="fas fa-download text-primary me-2"></i>
+              <span>Descarga tu diploma en PDF</span>
+            </div>
+            <div class="feature-item mb-3">
+              <i class="fas fa-qrcode text-info me-2"></i>
+              <span>Verificación con código QR</span>
+            </div>
+            <div class="feature-item mb-4">
+              <i class="fas fa-shield-alt text-warning me-2"></i>
+              <span>Documento oficialmente válido</span>
+            </div>
+          </div>
+          
+          <a href="/lookup" class="btn btn-success hover-lift">
+            <i class="fas fa-search me-2"></i>
+            Consultar Diploma
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Para Administradores -->
+    <div class="col-12 col-lg-6">
+      <div class="card h-100 border-0 fade-in fade-in-delay-2">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center mb-3">
+            <div class="feature-icon me-3">
+              <i class="fas fa-user-cog"></i>
+            </div>
+            <h5 class="card-title mb-0 fw-semibold">Para Administradores</h5>
+          </div>
+          
+          <p class="text-muted mb-4">
+            Gestiona escuelas, cursos y genera diplomas de forma masiva y eficiente.
+          </p>
+          
+          <div class="feature-list">
+            <div class="feature-item mb-3">
+              <i class="fas fa-school text-primary me-2"></i>
+              <span>Registro de escuelas y cursos</span>
+            </div>
+            <div class="feature-item mb-3">
+              <i class="fas fa-file-csv text-success me-2"></i>
+              <span>Carga masiva desde CSV</span>
+            </div>
+            <div class="feature-item mb-3">
+              <i class="fas fa-magic text-purple me-2"></i>
+              <span>Generación automática de PDF</span>
+            </div>
+            <div class="feature-item mb-4">
+              <i class="fas fa-chart-line text-info me-2"></i>
+              <span>Panel de control completo</span>
+            </div>
+          </div>
+          
+          <a href="/login" class="btn btn-primary hover-lift">
+            <i class="fas fa-sign-in-alt me-2"></i>
+            Acceder al Panel
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Proceso de verificación -->
+<section class="verification-section mb-5">
+  <div class="card border-0 bg-light">
+    <div class="card-body p-4 p-md-5">
+      <div class="text-center mb-5">
+        <h3 class="fw-bold text-dark fade-in">Proceso de Verificación</h3>
+        <p class="text-muted fade-in">Cada diploma incluye elementos de seguridad para garantizar su autenticidad</p>
+      </div>
+      
+      <div class="row g-4 align-items-center">
+        <div class="col-12 col-lg-4 text-center fade-in fade-in-delay-1">
+          <div class="verification-step">
+            <div class="step-icon mb-3">
+              <i class="fas fa-qrcode"></i>
+            </div>
+            <h6 class="fw-semibold">Código QR</h6>
+            <p class="small text-muted">Cada diploma incluye un código QR único que permite la verificación instantánea</p>
+          </div>
+        </div>
+        
+        <div class="col-12 col-lg-4 text-center fade-in fade-in-delay-2">
+          <div class="verification-step">
+            <div class="step-icon mb-3">
+              <i class="fas fa-fingerprint"></i>
+            </div>
+            <h6 class="fw-semibold">Hash de Seguridad</h6>
+            <p class="small text-muted">Algoritmo criptográfico que garantiza la integridad de los datos del diploma</p>
+          </div>
+        </div>
+        
+        <div class="col-12 col-lg-4 text-center fade-in fade-in-delay-3">
+          <div class="verification-step">
+            <div class="step-icon mb-3">
+              <i class="fas fa-certificate"></i>
+            </div>

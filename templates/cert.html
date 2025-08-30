@@ -1,30 +1,771 @@
 {% extends "layout.html" %}
-{% block title %}Diploma de {{ rec.student.nombre }}{% endblock %}
+{% block title %}Diploma {{ rec.student.nombre }} · Diplomas{% endblock %}
 {% block content %}
-<div class="text-center mb-3">
-  <h3>{{ rec.school.nombre }} — {{ rec.course.nombre }} ({{ rec.course.nivel }})</h3>
-  <p class="text-muted">CCT: {{ rec.school.cct }} • Fecha: {{ rec.fecha }}</p>
-</div>
 
-<div class="d-grid gap-2 d-md-flex justify-content-md-center mb-4">
-  <a class="btn btn-success" href="/cert/{{ rec.id }}/download.pdf">Descargar PDF</a>
-</div>
-
-<div class="alert {{ 'alert-success' if ok else 'alert-danger' }} text-center">
-  Verificación de integridad: <strong>{{ 'VÁLIDA' if ok else 'INVÁLIDA' }}</strong>
-</div>
-
-<div class="row justify-content-center">
-  <div class="col-12 col-lg-8">
-    <ul class="list-group shadow-sm">
-      <li class="list-group-item"><strong>Alumno:</strong> {{ rec.student.nombre }} ({{ rec.student.curp }})</li>
-      <li class="list-group-item"><strong>Curso:</strong> {{ rec.course.nombre }} — Nivel {{ rec.course.nivel }} — {{ rec.course.horas }} horas</li>
-      <li class="list-group-item"><strong>Competencias:</strong> {{ rec.course.competencias }}</li>
-      <li class="list-group-item"><strong>Módulos:</strong> {{ rec.course.modulos }}</li>
-      <li class="list-group-item"><strong>Grado/Grupo:</strong> {{ rec.student.grado }} {{ rec.student.grupo }}</li>
-      <li class="list-group-item"><strong>Emite:</strong> {{ rec.school.nombre }} — CCT {{ rec.school.cct }} — Turno {{ rec.school.turno }}</li>
-      <li class="list-group-item"><strong>Responsables:</strong> {{ rec.school.director }} / {{ rec.school.coordinador }}</li>
-    </ul>
+<!-- Estado de verificación -->
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-lg-10">
+    <div class="alert {% if ok %}alert-success{% else %}alert-danger{% endif %} fade-in">
+      <div class="d-flex align-items-center">
+        <div class="me-3">
+          <i class="fas {% if ok %}fa-shield-check{% else %}fa-shield-times{% endif %}" style="font-size: 2rem;"></i>
+        </div>
+        <div class="flex-grow-1">
+          <h5 class="alert-heading mb-2">
+            {% if ok %}
+              <i class="fas fa-check-circle me-2"></i>Diploma Verificado
+            {% else %}
+              <i class="fas fa-times-circle me-2"></i>Error de Verificación
+            {% endif %}
+          </h5>
+          <p class="mb-0">
+            {% if ok %}
+              Este diploma ha sido validado exitosamente. La información mostrada es auténtica y está respaldada por el sistema oficial.
+            {% else %}
+              <strong>Advertencia:</strong> Este diploma no pudo ser verificado. Los datos podrían haber sido modificados o el documento podría no ser auténtico.
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- Información del diploma -->
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-10">
+    <div class="card diploma-card fade-in fade-in-delay-1">
+      <div class="card-header diploma-header text-center py-4">
+        <div class="row align-items-center">
+          <div class="col-md-3 text-center mb-3 mb-md-0">
+            <div class="diploma-logo">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <h3 class="diploma-title mb-2">{{ rec.school.nombre }}</h3>
+            <p class="diploma-subtitle mb-1">CCT: {{ rec.school.cct }}</p>
+            <p class="diploma-subtitle mb-0">{{ rec.school.turno }}</p>
+          </div>
+          <div class="col-md-3 text-center">
+            <div class="verification-badge {% if ok %}verified{% else %}invalid{% endif %}">
+              <i class="fas {% if ok %}fa-certificate{% else %}fa-exclamation-triangle{% endif %}"></i>
+              <div class="badge-text">
+                {% if ok %}VERIFICADO{% else %}NO VÁLIDO{% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card-body diploma-body p-4 p-md-5">
+        <!-- Título del diploma -->
+        <div class="text-center mb-5">
+          <h1 class="diploma-main-title">DIPLOMA DE COMPUTACIÓN</h1>
+          <div class="diploma-decoration"></div>
+        </div>
+
+        <!-- Información del estudiante -->
+        <div class="student-info text-center mb-5">
+          <h4 class="text-muted mb-2">Se otorga a</h4>
+          <h2 class="student-name">{{ rec.student.nombre }}</h2>
+          <div class="student-details mt-3">
+            <span class="badge bg-primary me-2">CURP: {{ rec.student.curp }}</span>
+            {% if rec.student.grado %}
+              <span class="badge bg-info me-2">{{ rec.student.grado }}° Grado</span>
+            {% endif %}
+            {% if rec.student.grupo %}
+              <span class="badge bg-success">Grupo {{ rec.student.grupo }}</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Información del curso -->
+        <div class="course-info mb-5">
+          <div class="row g-4">
+            <div class="col-12 text-center mb-4">
+              <h5 class="text-muted">Por haber acreditado exitosamente el curso</h5>
+            </div>
+            
+            <div class="col-12 col-md-6">
+              <div class="info-card h-100">
+                <div class="info-header">
+                  <i class="fas fa-bookmark text-primary"></i>
+                  <h6>Curso</h6>
+                </div>
+                <p class="info-content">{{ rec.course.nombre }}</p>
+              </div>
+            </div>
+            
+            <div class="col-12 col-md-6">
+              <div class="info-card h-100">
+                <div class="info-header">
+                  <i class="fas fa-layer-group text-info"></i>
+                  <h6>Nivel y Duración</h6>
+                </div>
+                <p class="info-content">{{ rec.course.nivel }} - {{ rec.course.horas }} horas</p>
+              </div>
+            </div>
+            
+            {% if rec.course.competencias %}
+            <div class="col-12">
+              <div class="info-card">
+                <div class="info-header">
+                  <i class="fas fa-list-check text-success"></i>
+                  <h6>Competencias Desarrolladas</h6>
+                </div>
+                <p class="info-content">{{ rec.course.competencias }}</p>
+              </div>
+            </div>
+            {% endif %}
+            
+            {% if rec.course.modulos %}
+            <div class="col-12">
+              <div class="info-card">
+                <div class="info-header">
+                  <i class="fas fa-puzzle-piece text-warning"></i>
+                  <h6>Módulos Cursados</h6>
+                </div>
+                <p class="info-content">{{ rec.course.modulos }}</p>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Fecha y autoridades -->
+        <div class="authorities-section mb-5">
+          <div class="row g-4 align-items-center">
+            <div class="col-12 text-center mb-4">
+              <div class="date-badge">
+                <i class="fas fa-calendar-check me-2"></i>
+                Fecha de acreditación: {{ rec.fecha }}
+              </div>
+            </div>
+            
+            {% if rec.school.director %}
+            <div class="col-12 col-md-6 text-center">
+              <div class="authority-signature">
+                <div class="signature-line"></div>
+                <p class="authority-name">{{ rec.school.director }}</p>
+                <p class="authority-title">Director(a)</p>
+              </div>
+            </div>
+            {% endif %}
+            
+            {% if rec.school.coordinador %}
+            <div class="col-12 col-md-6 text-center">
+              <div class="authority-signature">
+                <div class="signature-line"></div>
+                <p class="authority-name">{{ rec.school.coordinador }}</p>
+                <p class="authority-title">Coordinador(a) de Computación</p>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Información técnica -->
+        <div class="tech-info">
+          <div class="row g-3 small text-muted">
+            <div class="col-12 col-md-6">
+              <div class="d-flex align-items-center">
+                <i class="fas fa-fingerprint me-2 text-info"></i>
+                <span>ID del Diploma: <code>{{ rec.id }}</code></span>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="d-flex align-items-center">
+                <i class="fas fa-clock me-2 text-success"></i>
+                <span>Generado: {{ rec.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer con acciones -->
+      <div class="card-footer diploma-footer text-center py-4">
+        <div class="row g-3 align-items-center justify-content-center">
+          <div class="col-auto">
+            <a href="{{ url_for('download_pdf', cert_id=rec.id) }}" 
+               class="btn btn-success btn-lg hover-lift" 
+               target="_blank">
+              <i class="fas fa-download me-2"></i>
+              Descargar PDF
+            </a>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-primary btn-lg hover-lift" onclick="shareCredential()">
+              <i class="fas fa-share-alt me-2"></i>
+              Compartir
+            </button>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-info btn-lg hover-lift" onclick="printCredential()">
+              <i class="fas fa-print me-2"></i>
+              Imprimir
+            </button>
+          </div>
+        </div>
+        
+        <hr class="my-4">
+        
+        <div class="row g-3 justify-content-center small text-muted">
+          <div class="col-auto">
+            <i class="fas fa-shield-check text-success me-1"></i>
+            Documento oficial verificable
+          </div>
+          <div class="col-auto">
+            <i class="fas fa-qrcode text-info me-1"></i>
+            Incluye código QR de verificación
+          </div>
+          <div class="col-auto">
+            <i class="fas fa-lock text-warning me-1"></i>
+            Respaldado criptográficamente
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de compartir -->
+<div class="modal fade" id="shareModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-share-alt me-2"></i>
+          Compartir Diploma
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted mb-3">Comparte el enlace de verificación de tu diploma:</p>
+        
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" id="shareUrl" readonly 
+                 value="{{ request.url }}">
+          <button class="btn btn-outline-primary" type="button" onclick="copyToClipboard()">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+        
+        <div class="d-grid gap-2">
+          <a href="https://wa.me/?text={{ request.url | urlencode }}" 
+             class="btn btn-success" target="_blank">
+            <i class="fab fa-whatsapp me-2"></i>
+            Compartir por WhatsApp
+          </a>
+          <button class="btn btn-primary" onclick="shareNative()">
+            <i class="fas fa-share me-2"></i>
+            Usar función nativa de compartir
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Estilos específicos para el diploma -->
+<style>
+  .diploma-card {
+    background: #ffffff;
+    border: none;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+
+  .diploma-header {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-bottom: 3px solid var(--primary-color);
+  }
+
+  .diploma-logo {
+    width: 80px;
+    height: 80px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2.5rem;
+    box-shadow: var(--shadow-medium);
+  }
+
+  .diploma-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+  }
+
+  .diploma-subtitle {
+    color: var(--text-light);
+    font-size: 0.9rem;
+  }
+
+  .verification-badge {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .verification-badge.verified {
+    background: var(--gradient-success);
+    color: white;
+  }
+
+  .verification-badge.invalid {
+    background: var(--gradient-accent);
+    color: white;
+  }
+
+  .badge-text {
+    font-size: 0.6rem;
+    margin-top: 2px;
+  }
+
+  .diploma-main-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+  }
+
+  .diploma-decoration {
+    width: 200px;
+    height: 4px;
+    background: var(--gradient-primary);
+    margin: 0 auto;
+    border-radius: 2px;
+  }
+
+  .student-name {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    color: var(--text-dark);
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+  }
+
+  .info-card {
+    background: var(--secondary-color);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border-left: 4px solid var(--primary-color);
+    transition: all 0.3s ease;
+  }
+
+  .info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+  }
+
+  .info-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .info-header h6 {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+
+  .info-content {
+    margin: 0;
+    color: var(--text-light);
+    line-height: 1.6;
+  }
+
+  .date-badge {
+    display: inline-block;
+    background: var(--gradient-success);
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-medium);
+  }
+
+  .authority-signature {
+    padding: 2rem 1rem 1rem;
+  }
+
+  .signature-line {
+    height: 60px;
+    border-bottom: 2px solid var(--text-dark);
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .authority-name {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .authority-title {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .diploma-footer {
+    background: var(--secondary-color);
+    border-top: 1px solid var(--border-color);
+  }
+
+  .tech-info {
+    background: var(--secondary-color);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+  }
+
+  @media (max-width: 768px) {
+    .diploma-main-title {
+      font-size: 1.8rem;
+    }
+    
+    .diploma-logo {
+      width: 60px;
+      height: 60px;
+      font-size: 1.8rem;
+    }
+    
+    .verification-badge {
+      width: 60px;
+      height: 60px;
+      font-size: 1.2rem;
+    }
+    
+    .btn-lg {
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+    }
+  }
+
+  @media print {
+    .diploma-footer,
+    .navbar,
+    .btn {
+      display: none !important;
+    }
+    
+    .diploma-card {
+      box-shadow: none;
+      border: 2px solid #000;
+    }
+  }
+</style>
+
+<script>
+function shareCredential() {
+  const modal = new bootstrap.Modal(document.getElementById('shareModal'));
+  modal.show();
+}
+
+function copyToClipboard() {
+  const urlInput = document.getElementById('shareUrl');
+  urlInput.select();
+  urlInput.setSelectionRange(0, 99999); // Para móviles
+  
+  navigator.clipboard.writeText(urlInput.value).then(() => {
+    // Mostrar feedback visual
+    const btn = event.target.closest('button');
+    const originalContent = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-check text-success"></i>';
+    btn.classList.add('btn-success');
+    btn.classList.remove('btn-outline-primary');
+    
+    setTimeout(() => {
+      btn.innerHTML = originalContent;
+      btn.classList.remove('btn-success');
+      btn.classList.add('btn-outline-primary');
+    }, 2000);
+    
+    // Toast notification
+    showToast('Enlace copiado al portapapeles', 'success');
+  }).catch(() => {
+    // Fallback para navegadores que no soporten clipboard API
+    urlInput.focus();
+    document.execCommand('copy');
+    showToast('Enlace copiado (método alternativo)', 'info');
+  });
+}
+
+function shareNative() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'Mi Diploma de Computación',
+      text: 'Mira mi diploma de computación verificado oficialmente',
+      url: window.location.href
+    }).then(() => {
+      showToast('Diploma compartido exitosamente', 'success');
+    }).catch((error) => {
+      console.log('Error al compartir:', error);
+    });
+  } else {
+    showToast('Tu navegador no soporta la función nativa de compartir', 'warning');
+  }
+}
+
+function printCredential() {
+  // Ocultar elementos que no deben imprimirse
+  const elementsToHide = [
+    '.diploma-footer',
+    '.navbar',
+    'main .alert',
+    '.tech-info'
+  ];
+  
+  elementsToHide.forEach(selector => {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(el => el.style.display = 'none');
+  });
+  
+  // Configurar estilos para impresión
+  const printStyles = `
+    <style media="print">
+      body { background: white !important; }
+      .diploma-card { 
+        box-shadow: none !important; 
+        border: 2px solid #000 !important;
+        margin: 0 !important;
+      }
+      .verification-badge.verified {
+        background: #10b981 !important;
+        color: white !important;
+      }
+      .verification-badge.invalid {
+        background: #ef4444 !important;
+        color: white !important;
+      }
+    </style>
+  `;
+  
+  document.head.insertAdjacentHTML('beforeend', printStyles);
+  
+  // Imprimir
+  window.print();
+  
+  // Restaurar elementos después de imprimir
+  setTimeout(() => {
+    elementsToHide.forEach(selector => {
+      const elements = document.querySelectorAll(selector);
+      elements.forEach(el => el.style.display = '');
+    });
+  }, 1000);
+}
+
+function showToast(message, type = 'info') {
+  // Crear toast dinámico
+  const toastContainer = document.getElementById('toastContainer') || createToastContainer();
+  
+  const toastId = 'toast-' + Date.now();
+  const iconMap = {
+    success: 'fas fa-check-circle text-success',
+    error: 'fas fa-times-circle text-danger',
+    warning: 'fas fa-exclamation-triangle text-warning',
+    info: 'fas fa-info-circle text-info'
+  };
+  
+  const toastHTML = `
+    <div id="${toastId}" class="toast align-items-center border-0" role="alert" data-bs-autohide="true" data-bs-delay="4000">
+      <div class="d-flex">
+        <div class="toast-body d-flex align-items-center">
+          <i class="${iconMap[type]} me-2"></i>
+          ${message}
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  `;
+  
+  toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+  
+  const toastElement = document.getElementById(toastId);
+  const toast = new bootstrap.Toast(toastElement);
+  toast.show();
+  
+  // Limpiar después de que se oculte
+  toastElement.addEventListener('hidden.bs.toast', () => {
+    toastElement.remove();
+  });
+}
+
+function createToastContainer() {
+  const container = document.createElement('div');
+  container.id = 'toastContainer';
+  container.className = 'toast-container position-fixed top-0 end-0 p-3';
+  container.style.zIndex = '9999';
+  document.body.appendChild(container);
+  return container;
+}
+
+// Efectos visuales adicionales
+document.addEventListener('DOMContentLoaded', function() {
+  // Animación de entrada para las cards de información
+  const infoCards = document.querySelectorAll('.info-card');
+  infoCards.forEach((card, index) => {
+    card.style.animationDelay = `${index * 0.1}s`;
+    card.classList.add('fade-in');
+  });
+
+  // Efecto de hover mejorado para botones
+  const buttons = document.querySelectorAll('.btn');
+  buttons.forEach(btn => {
+    btn.addEventListener('mouseenter', function() {
+      this.style.transform = 'translateY(-2px) scale(1.02)';
+    });
+    
+    btn.addEventListener('mouseleave', function() {
+      this.style.transform = 'translateY(0) scale(1)';
+    });
+  });
+
+  // Lazy loading para imágenes (si las hay)
+  const images = document.querySelectorAll('img[data-src]');
+  const imageObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        img.src = img.dataset.src;
+        img.classList.remove('lazy');
+        observer.unobserve(img);
+      }
+    });
+  });
+
+  images.forEach(img => imageObserver.observe(img));
+
+  // Animación de conteo para elementos numéricos
+  const numbers = document.querySelectorAll('[data-count]');
+  const numberObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateNumber(entry.target);
+        numberObserver.unobserve(entry.target);
+      }
+    });
+  });
+
+  numbers.forEach(num => numberObserver.observe(num));
+
+  // Efecto de partículas en el fondo del diploma (sutil)
+  createParticleEffect();
+});
+
+function animateNumber(element) {
+  const target = parseInt(element.dataset.count);
+  const duration = 2000;
+  const increment = target / (duration / 16);
+  let current = 0;
+
+  const updateNumber = () => {
+    current += increment;
+    if (current < target) {
+      element.textContent = Math.floor(current);
+      requestAnimationFrame(updateNumber);
+    } else {
+      element.textContent = target;
+    }
+  };
+
+  updateNumber();
+}
+
+function createParticleEffect() {
+  // Crear canvas para partículas sutiles en el fondo
+  const canvas = document.createElement('canvas');
+  canvas.id = 'particleCanvas';
+  canvas.style.position = 'fixed';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  canvas.style.pointerEvents = 'none';
+  canvas.style.zIndex = '-1';
+  canvas.style.opacity = '0.1';
+  
+  document.body.appendChild(canvas);
+  
+  const ctx = canvas.getContext('2d');
+  
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  
+  const particles = [];
+  
+  // Crear partículas
+  for (let i = 0; i < 50; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      radius: Math.random() * 2 + 1
+    });
+  }
+  
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    particles.forEach(particle => {
+      // Actualizar posición
+      particle.x += particle.vx;
+      particle.y += particle.vy;
+      
+      // Rebotar en los bordes
+      if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
+      if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
+      
+      // Dibujar partícula
+      ctx.beginPath();
+      ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+      ctx.fillStyle = '#6366f1';
+      ctx.fill();
+    });
+    
+    requestAnimationFrame(animateParticles);
+  }
+  
+  animateParticles();
+}
+
+// Detectar modo oscuro del sistema
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  document.body.classList.add('dark-mode');
+}
+
+// Escuchar cambios en el modo oscuro
+window.matchMedia('(prefers-color-scheme: dark)').addListener(function(e) {
+  if (e.matches) {
+    document.body.classList.add('dark-mode');
+  } else {
+    document.body.classList.remove('dark-mode');
+  }
+});
+</script>
+
 {% endblock %}

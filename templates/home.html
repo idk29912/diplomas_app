@@ -1,36 +1,521 @@
 {% extends "layout.html" %}
-{% block title %}Inicio · Diplomas{% endblock %}
+{% block title %}Diplomas de Computación{% endblock %}
 {% block content %}
-<div class="row g-4">
-  <div class="col-12 col-lg-7">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h4 class="card-title mb-2">Consulta tu diploma</h4>
-        <p class="text-muted">Escribe tu CURP para buscar tu constancia digital.</p>
-        <form method="post" action="/lookup" class="row g-3">
-          <div class="col-12 col-md-8">
-            <label class="form-label">CURP</label>
-            <input class="form-control" name="curp" placeholder="BEXX991001HDFLLL01" required>
-          </div>
-          <div class="col-12 col-md-4 d-grid align-items-end">
-            <button class="btn btn-success">Buscar</button>
-          </div>
-        </form>
-        {% if error %}
-          <div class="alert alert-danger mt-3">{{ error }}</div>
-        {% endif %}
-      </div>
-    </div>
-  </div>
 
-  <div class="col-12 col-lg-5">
-    <div class="card border-0 bg-light">
-      <div class="card-body">
-        <h5>¿Eres administrador?</h5>
-        <p class="text-muted">Genera diplomas por lotes y administra escuelas/cursos.</p>
-        <a href="/login" class="btn btn-outline-primary">Ir al login</a>
+<!-- Hero Section -->
+<section class="hero-section text-center mb-5 fade-in">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="hero-content">
+        <!-- Icono principal animado -->
+        <div class="hero-icon mb-4">
+          <div class="d-inline-flex align-items-center justify-content-center position-relative"
+               style="width: 120px; height: 120px; background: var(--gradient-primary); border-radius: 50%;">
+            <i class="fas fa-graduation-cap text-white" style="font-size: 3.5rem;"></i>
+            <!-- Elementos decorativos flotantes -->
+            <div class="floating-element" style="position: absolute; top: -10px; right: -10px;">
+              <i class="fas fa-star text-warning" style="font-size: 1.5rem; animation: pulse 2s infinite;"></i>
+            </div>
+            <div class="floating-element" style="position: absolute; bottom: -5px; left: -15px;">
+              <i class="fas fa-laptop text-info" style="font-size: 1.2rem; animation: pulse 2s infinite 0.5s;"></i>
+            </div>
+          </div>
+        </div>
+
+        <h1 class="display-4 fw-bold text-dark mb-3">
+          Sistema de <span class="text-gradient">Diplomas</span><br>
+          de Computación
+        </h1>
+        
+        <p class="lead text-muted mb-4 px-md-5">
+          Plataforma digital para la generación y consulta de constancias de capacitación en computación. 
+          Acceso rápido, seguro y verificable para estudiantes y administradores.
+        </p>
+
+        <!-- Botones principales -->
+        <div class="d-flex flex-column flex-md-row gap-3 justify-content-center mb-5">
+          <a href="/lookup" class="btn btn-success btn-lg hover-lift px-4 py-3">
+            <i class="fas fa-search me-2"></i>
+            Consultar mi Diploma
+          </a>
+          <a href="/login" class="btn btn-primary btn-lg hover-lift px-4 py-3">
+            <i class="fas fa-cog me-2"></i>
+            Panel Administrativo
+          </a>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</section>
+
+<!-- Características principales -->
+<section class="features-section mb-5">
+  <div class="row g-4">
+    <div class="col-12 text-center mb-4">
+      <h2 class="h3 fw-bold text-dark fade-in">¿Qué puedes hacer aquí?</h2>
+      <p class="text-muted fade-in">Descubre las funcionalidades de nuestra plataforma</p>
+    </div>
+
+    <!-- Para Estudiantes -->
+    <div class="col-12 col-lg-6">
+      <div class="card h-100 border-0 fade-in fade-in-delay-1">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center mb-3">
+            <div class="feature-icon me-3">
+              <i class="fas fa-user-graduate"></i>
+            </div>
+            <h5 class="card-title mb-0 fw-semibold">Para Estudiantes</h5>
+          </div>
+          
+          <p class="text-muted mb-4">
+            Accede fácilmente a tu constancia de capacitación y verifica su autenticidad.
+          </p>
+          
+          <div class="feature-list">
+            <div class="feature-item mb-3">
+              <i class="fas fa-check-circle text-success me-2"></i>
+              <span>Consulta rápida con tu CURP</span>
+            </div>
+            <div class="feature-item mb-3">
+              <i class="fas fa-download text-primary me-2"></i>
+              <span>Descarga tu diploma en PDF</span>
+            </div>
+            <div class="feature-item mb-3">
+              <i class="fas fa-qrcode text-info me-2"></i>
+              <span>Verificación con código QR</span>
+            </div>
+            <div class="feature-item mb-4">
+              <i class="fas fa-shield-alt text-warning me-2"></i>
+              <span>Documento oficialmente válido</span>
+            </div>
+          </div>
+          
+          <a href="/lookup" class="btn btn-success hover-lift">
+            <i class="fas fa-search me-2"></i>
+            Consultar Diploma
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Para Administradores -->
+    <div class="col-12 col-lg-6">
+      <div class="card h-100 border-0 fade-in fade-in-delay-2">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center mb-3">
+            <div class="feature-icon me-3">
+              <i class="fas fa-user-cog"></i>
+            </div>
+            <h5 class="card-title mb-0 fw-semibold">Para Administradores</h5>
+          </div>
+          
+          <p class="text-muted mb-4">
+            Gestiona escuelas, cursos y genera diplomas de forma masiva y eficiente.
+          </p>
+          
+          <div class="feature-list">
+            <div class="feature-item mb-3">
+              <i class="fas fa-school text-primary me-2"></i>
+              <span>Registro de escuelas y cursos</span>
+            </div>
+            <div class="feature-item mb-3">
+              <i class="fas fa-file-csv text-success me-2"></i>
+              <span>Carga masiva desde CSV</span>
+            </div>
+            <div class="feature-item mb-3">
+              <i class="fas fa-magic text-purple me-2"></i>
+              <span>Generación automática de PDF</span>
+            </div>
+            <div class="feature-item mb-4">
+              <i class="fas fa-chart-line text-info me-2"></i>
+              <span>Panel de control completo</span>
+            </div>
+          </div>
+          
+          <a href="/login" class="btn btn-primary hover-lift">
+            <i class="fas fa-sign-in-alt me-2"></i>
+            Acceder al Panel
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Proceso de verificación -->
+<section class="verification-section mb-5">
+  <div class="card border-0 bg-light">
+    <div class="card-body p-4 p-md-5">
+      <div class="text-center mb-5">
+        <h3 class="fw-bold text-dark fade-in">Proceso de Verificación</h3>
+        <p class="text-muted fade-in">Cada diploma incluye elementos de seguridad para garantizar su autenticidad</p>
+      </div>
+      
+      <div class="row g-4 align-items-center">
+        <div class="col-12 col-lg-4 text-center fade-in fade-in-delay-1">
+          <div class="verification-step">
+            <div class="step-icon mb-3">
+              <i class="fas fa-qrcode"></i>
+            </div>
+            <h6 class="fw-semibold">Código QR</h6>
+            <p class="small text-muted">Cada diploma incluye un código QR único que permite la verificación instantánea</p>
+          </div>
+        </div>
+        
+        <div class="col-12 col-lg-4 text-center fade-in fade-in-delay-2">
+          <div class="verification-step">
+            <div class="step-icon mb-3">
+              <i class="fas fa-fingerprint"></i>
+            </div>
+            <h6 class="fw-semibold">Hash de Seguridad</h6>
+            <p class="small text-muted">Algoritmo criptográfico que garantiza la integridad de los datos del diploma</p>
+          </div>
+        </div>
+        
+        <div class="col-12 col-lg-4 text-center fade-in fade-in-delay-3">
+          <div class="verification-step">
+            <div class="step-icon mb-3">
+              <i class="fas fa-certificate"></i>
+            </div>
+            <h6 class="fw-semibold">Validación Oficial</h6>
+            <p class="small text-muted">Documento respaldado por la institución educativa con firmas digitalizadas</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Estadísticas -->
+<section class="stats-section mb-5">
+  <div class="row g-4 text-center">
+    <div class="col-12 mb-4">
+      <h3 class="fw-bold text-dark fade-in">Nuestra Plataforma en Números</h3>
+      <p class="text-muted fade-in">Confianza y eficiencia en cada proceso</p>
+    </div>
+    
+    <div class="col-6 col-lg-3 fade-in fade-in-delay-1">
+      <div class="stat-card p-4">
+        <div class="stat-icon mb-3">
+          <i class="fas fa-graduation-cap text-success"></i>
+        </div>
+        <div class="stat-number">1,000+</div>
+        <div class="stat-label">Diplomas Generados</div>
+      </div>
+    </div>
+    
+    <div class="col-6 col-lg-3 fade-in fade-in-delay-2">
+      <div class="stat-card p-4">
+        <div class="stat-icon mb-3">
+          <i class="fas fa-school text-primary"></i>
+        </div>
+        <div class="stat-number">50+</div>
+        <div class="stat-label">Escuelas Registradas</div>
+      </div>
+    </div>
+    
+    <div class="col-6 col-lg-3 fade-in fade-in-delay-3">
+      <div class="stat-card p-4">
+        <div class="stat-icon mb-3">
+          <i class="fas fa-laptop-code text-info"></i>
+        </div>
+        <div class="stat-number">25+</div>
+        <div class="stat-label">Cursos Disponibles</div>
+      </div>
+    </div>
+    
+    <div class="col-6 col-lg-3 fade-in fade-in-delay-4">
+      <div class="stat-card p-4">
+        <div class="stat-icon mb-3">
+          <i class="fas fa-shield-check text-warning"></i>
+        </div>
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Verificación Segura</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Guía rápida -->
+<section class="guide-section mb-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+      <div class="card border-0">
+        <div class="card-body p-4 p-md-5">
+          <div class="text-center mb-5">
+            <h3 class="fw-bold text-dark fade-in">¿Cómo funciona?</h3>
+            <p class="text-muted fade-in">Sigue estos simples pasos para acceder a tu diploma</p>
+          </div>
+          
+          <div class="row g-4">
+            <div class="col-12 col-md-4 text-center fade-in fade-in-delay-1">
+              <div class="guide-step position-relative">
+                <div class="step-number-large mb-3">1</div>
+                <h6 class="fw-semibold mb-2">Ingresa tu CURP</h6>
+                <p class="small text-muted">Utiliza tu Clave Única de Registro de Población para identificarte</p>
+                <div class="step-arrow d-none d-md-block">
+                  <i class="fas fa-arrow-right text-muted"></i>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-12 col-md-4 text-center fade-in fade-in-delay-2">
+              <div class="guide-step position-relative">
+                <div class="step-number-large mb-3">2</div>
+                <h6 class="fw-semibold mb-2">Verifica tu Información</h6>
+                <p class="small text-muted">Revisa que los datos mostrados correspondan a tu capacitación</p>
+                <div class="step-arrow d-none d-md-block">
+                  <i class="fas fa-arrow-right text-muted"></i>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-12 col-md-4 text-center fade-in fade-in-delay-3">
+              <div class="guide-step">
+                <div class="step-number-large mb-3">3</div>
+                <h6 class="fw-semibold mb-2">Descarga tu Diploma</h6>
+                <p class="small text-muted">Obtén tu constancia en formato PDF con validación oficial</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Final -->
+<section class="cta-section text-center">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="cta-card p-4 p-md-5 fade-in">
+        <h3 class="fw-bold text-white mb-3">¿Listo para obtener tu diploma?</h3>
+        <p class="text-white-50 mb-4">
+          Accede ahora a tu constancia de capacitación en computación de forma rápida y segura
+        </p>
+        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+          <a href="/lookup" class="btn btn-light btn-lg hover-lift px-4 py-3">
+            <i class="fas fa-search me-2"></i>
+            Consultar mi Diploma
+          </a>
+          <a href="/login" class="btn btn-outline-light btn-lg hover-lift px-4 py-3">
+            <i class="fas fa-cog me-2"></i>
+            Acceso Administrativo
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Estilos adicionales para esta página -->
+<style>
+  .text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-icon {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .floating-element {
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+  }
+
+  .feature-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--gradient-primary);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+
+  .feature-item:hover {
+    transform: translateX(5px);
+  }
+
+  .verification-step .step-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--gradient-accent);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    margin: 0 auto;
+  }
+
+  .stat-card {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 1rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-large);
+  }
+
+  .stat-icon {
+    font-size: 2.5rem;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-top: 0.5rem;
+  }
+
+  .step-number-large {
+    width: 60px;
+    height: 60px;
+    background: var(--gradient-success);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 auto;
+  }
+
+  .step-arrow {
+    position: absolute;
+    top: 50%;
+    right: -25px;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+  }
+
+  .cta-card {
+    background: var(--gradient-primary);
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow-large);
+  }
+
+  .btn-outline-light:hover {
+    background: white;
+    color: var(--primary-color) !important;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .display-4 {
+      font-size: 2.5rem;
+    }
+    
+    .hero-icon div {
+      width: 80px !important;
+      height: 80px !important;
+    }
+    
+    .hero-icon i {
+      font-size: 2.5rem !important;
+    }
+    
+    .stat-number {
+      font-size: 1.5rem;
+    }
+    
+    .step-number-large {
+      width: 50px;
+      height: 50px;
+      font-size: 1.2rem;
+    }
+  }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Contador animado para las estadísticas
+  const counters = document.querySelectorAll('.stat-number');
+  
+  const animateCounter = (counter) => {
+    const target = parseInt(counter.textContent.replace(/[^\d]/g, ''));
+    const increment = target / 50;
+    let current = 0;
+    
+    const updateCounter = () => {
+      if (current < target) {
+        current += increment;
+        if (counter.textContent.includes('+')) {
+          counter.textContent = Math.ceil(current) + '+';
+        } else if (counter.textContent.includes('%')) {
+          counter.textContent = Math.ceil(current) + '%';
+        } else {
+          counter.textContent = Math.ceil(current);
+        }
+        requestAnimationFrame(updateCounter);
+      } else {
+        counter.textContent = counter.textContent; // Restaurar valor original
+      }
+    };
+    
+    updateCounter();
+  };
+
+  // Intersection Observer para animar contadores cuando sean visibles
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        counterObserver.unobserve(entry.target);
+      }
+    });
+  });
+
+  counters.forEach(counter => {
+    counterObserver.observe(counter);
+  });
+
+  // Efecto parallax en las cards
+  window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    const cards = document.querySelectorAll('.card');
+    
+    cards.forEach((card, index) => {
+      const speed = 0.1 + (index * 0.02);
+      const yPos = -(scrolled * speed);
+      card.style.transform = `translateY(${yPos}px)`;
+    });
+  });
+});
+</script>
+
 {% endblock %}

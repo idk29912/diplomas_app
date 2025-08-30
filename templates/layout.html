@@ -7,46 +7,484 @@
 
   <!-- Bootstrap desde CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
   <style>
+    :root {
+      --primary-color: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary-color: #f8fafc;
+      --accent-color: #10b981;
+      --danger-color: #ef4444;
+      --warning-color: #f59e0b;
+      --text-dark: #1f2937;
+      --text-light: #6b7280;
+      --border-color: #e5e7eb;
+      --shadow-light: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      background-color: #7396b8b5;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: var(--text-dark);
+      line-height: 1.6;
     }
+
+    /* Animaciones */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .fade-in {
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .slide-in {
+      animation: slideIn 0.5s ease-out;
+    }
+
+    /* Navbar mejorada */
+    .navbar {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: var(--shadow-light);
+      padding: 1rem 0;
+    }
+
     .navbar-brand {
-      font-weight: bold;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--primary-color) !important;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
+
+    .navbar-brand i {
+      font-size: 1.8rem;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-nav {
+      padding: 0.5rem 1rem;
+      border-radius: 0.75rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      font-size: 0.9rem;
+    }
+
+    .btn-nav-primary {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: var(--shadow-light);
+    }
+
+    .btn-nav-outline {
+      background: rgba(255, 255, 255, 0.2);
+      color: var(--primary-color);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-nav:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    /* Cards mejoradas */
     .card {
-      box-shadow: 0 2px 5px rgba(74, 33, 33, 0.852);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 1rem;
+      box-shadow: var(--shadow-large);
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .card-body {
+      padding: 2rem;
+    }
+
+    .card-title {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-title i {
+      width: 24px;
+      height: 24px;
+      background: var(--gradient-primary);
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.9rem;
+    }
+
+    /* Formularios mejorados */
+    .form-label {
+      font-weight: 500;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .form-control, .form-select {
+      background: rgba(255, 255, 255, 0.8);
+      border: 2px solid transparent;
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .form-control:focus, .form-select:focus {
+      background: rgba(255, 255, 255, 0.95);
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .form-control::placeholder {
+      color: var(--text-light);
+    }
+
+    /* Botones mejorados */
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: var(--shadow-medium);
+    }
+
+    .btn-success {
+      background: var(--gradient-success);
+      color: white;
+      box-shadow: var(--shadow-medium);
+    }
+
+    .btn-warning {
+      background: var(--gradient-accent);
+      color: white;
+      box-shadow: var(--shadow-medium);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-large);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      transform: none;
+      cursor: not-allowed;
+    }
+
+    /* Alertas mejoradas */
+    .alert {
+      border: none;
+      border-radius: 0.75rem;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .alert::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: currentColor;
+    }
+
+    .alert-info {
+      background: rgba(59, 130, 246, 0.1);
+      color: #1e40af;
+      border-left: 4px solid #3b82f6;
+    }
+
+    .alert-warning {
+      background: rgba(245, 158, 11, 0.1);
+      color: #92400e;
+      border-left: 4px solid #f59e0b;
+    }
+
+    .alert-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: #065f46;
+      border-left: 4px solid #10b981;
+    }
+
+    .alert-danger {
+      background: rgba(239, 68, 68, 0.1);
+      color: #991b1b;
+      border-left: 4px solid #ef4444;
+    }
+
+    /* Container mejorado */
+    .container {
+      max-width: 1200px;
+    }
+
+    main {
+      padding: 2rem 0;
+    }
+
+    /* Efectos especiales */
+    .step-number {
+      width: 32px;
+      height: 32px;
+      background: var(--gradient-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-right: 0.5rem;
+    }
+
+    .progress-indicator {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: var(--gradient-primary);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .card-body {
+        padding: 1.5rem;
+      }
+      
+      .navbar-brand {
+        font-size: 1.3rem;
+      }
+      
+      .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Microanimaciones */
+    .hover-lift {
+      transition: transform 0.2s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+    }
+
+    .fade-in-delay-1 { animation-delay: 0.1s; }
+    .fade-in-delay-2 { animation-delay: 0.2s; }
+    .fade-in-delay-3 { animation-delay: 0.3s; }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
-<body class="bg-light">
-  <!-- Barra de navegación -->
-  <nav class="navbar navbar-dark bg-primary mb-4">
+<body>
+  <!-- Barra de navegación mejorada -->
+  <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="/">Diplomas de Computación</a>
-      <div>
+      <a class="navbar-brand slide-in" href="/">
+        <i class="fas fa-graduation-cap"></i>
+        Diplomas de Computación
+      </a>
+      <div class="nav-buttons">
         {% if session.get('admin') %}
-          <a class="btn btn-sm btn-light" href="/upload">Panel</a>
-          <a class="btn btn-sm btn-outline-light" href="/logout">Salir</a>
+          <a class="btn-nav btn-nav-primary hover-lift" href="/upload">
+            <i class="fas fa-cog me-1"></i>Panel
+          </a>
+          <a class="btn-nav btn-nav-outline hover-lift" href="/logout">
+            <i class="fas fa-sign-out-alt me-1"></i>Salir
+          </a>
         {% else %}
-          <a class="btn btn-sm btn-outline-light" href="/login">Admin</a>
+          <a class="btn-nav btn-nav-primary hover-lift" href="/login">
+            <i class="fas fa-user-shield me-1"></i>Admin
+          </a>
         {% endif %}
       </div>
     </div>
   </nav>
 
   <!-- Contenido dinámico -->
-  <main class="container">
+  <main class="container" style="margin-top: 100px;">
     {% with messages = get_flashed_messages() %}
       {% if messages %}
-        <div class="alert alert-info">{{ messages[0] }}</div>
+        <div class="alert alert-info fade-in">
+          <i class="fas fa-info-circle me-2"></i>
+          {{ messages[0] }}
+        </div>
       {% endif %}
     {% endwith %}
     {% block content %}{% endblock %}
   </main>
 
-  <!-- JS de Bootstrap (opcional para modales o dropdowns) -->
+  <!-- JS de Bootstrap -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- JavaScript personalizado -->
+  <script>
+    // Animaciones al cargar
+    document.addEventListener('DOMContentLoaded', function() {
+      // Agregar clases de animación a elementos
+      const cards = document.querySelectorAll('.card');
+      cards.forEach((card, index) => {
+        card.classList.add('fade-in');
+        card.style.animationDelay = `${index * 0.1}s`;
+      });
+
+      // Efecto de typing en inputs
+      const inputs = document.querySelectorAll('.form-control');
+      inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          this.parentElement.style.transform = 'scale(1.02)';
+        });
+        
+        input.addEventListener('blur', function() {
+          this.parentElement.style.transform = 'scale(1)';
+        });
+      });
+
+      // Loading state en botones de formulario
+      const forms = document.querySelectorAll('form');
+      forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+          const submitBtn = this.querySelector('button[type="submit"]');
+          if (submitBtn) {
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="spinner me-2"></span>Procesando...';
+            submitBtn.disabled = true;
+            
+            // Restaurar después de 5 segundos (fallback)
+            setTimeout(() => {
+              submitBtn.innerHTML = originalText;
+              submitBtn.disabled = false;
+            }, 5000);
+          }
+        });
+      });
+    });
+
+    // Efecto parallax suave en el fondo
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      document.body.style.backgroundPosition = `center ${scrolled * 0.5}px`;
+    });
+  </script>
 </body>
 </html>

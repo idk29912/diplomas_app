@@ -1,179 +1,430 @@
 {% extends "layout.html" %}
-{% block title %}Diplomas de Computación{% endblock %}
+{% block title %}Consultar Diploma · Sistema de Diplomas{% endblock %}
 {% block content %}
 
-<!-- Hero Section -->
+<!-- Hero Section de Consulta -->
 <section class="hero-section text-center mb-5 fade-in">
   <div class="row justify-content-center">
     <div class="col-12 col-lg-8">
       <div class="hero-content">
-        <!-- Icono principal animado -->
+        <!-- Icono principal -->
         <div class="hero-icon mb-4">
           <div class="d-inline-flex align-items-center justify-content-center position-relative"
-               style="width: 120px; height: 120px; background: var(--gradient-primary); border-radius: 50%;">
-            <i class="fas fa-graduation-cap text-white" style="font-size: 3.5rem;"></i>
-            <!-- Elementos decorativos flotantes -->
-            <div class="floating-element" style="position: absolute; top: -10px; right: -10px;">
-              <i class="fas fa-star text-warning" style="font-size: 1.5rem; animation: pulse 2s infinite;"></i>
-            </div>
-            <div class="floating-element" style="position: absolute; bottom: -5px; left: -15px;">
-              <i class="fas fa-laptop text-info" style="font-size: 1.2rem; animation: pulse 2s infinite 0.5s;"></i>
-            </div>
+               style="width: 100px; height: 100px; background: var(--gradient-success); border-radius: 50%;">
+            <i class="fas fa-search text-white" style="font-size: 2.5rem;"></i>
           </div>
         </div>
 
-        <h1 class="display-4 fw-bold text-dark mb-3">
-          Sistema de <span class="text-gradient">Diplomas</span><br>
-          de Computación
+        <h1 class="display-5 fw-bold text-dark mb-3">
+          Consultar mi <span class="text-gradient-success">Diploma</span>
         </h1>
         
-        <p class="lead text-muted mb-4 px-md-5">
-          Plataforma digital para la generación y consulta de constancias de capacitación en computación. 
-          Acceso rápido, seguro y verificable para estudiantes y administradores.
+        <p class="lead text-muted mb-4">
+          Ingresa tu CURP para consultar y descargar tu constancia de capacitación en computación.
         </p>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <!-- Botones principales -->
-        <div class="d-flex flex-column flex-md-row gap-3 justify-content-center mb-5">
-          <a href="/lookup" class="btn btn-success btn-lg hover-lift px-4 py-3">
-            <i class="fas fa-search me-2"></i>
-            Consultar mi Diploma
-          </a>
-          <a href="/login" class="btn btn-primary btn-lg hover-lift px-4 py-3">
-            <i class="fas fa-cog me-2"></i>
-            Panel Administrativo
-          </a>
+<!-- Formulario de búsqueda -->
+<section class="lookup-section mb-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-6">
+      <div class="card border-0 shadow-lg">
+        <div class="card-body p-4 p-md-5">
+          <form method="post" id="lookupForm">
+            <div class="mb-4">
+              <label for="curp" class="form-label fw-semibold">
+                <i class="fas fa-id-card me-2 text-primary"></i>
+                CURP (Clave Única de Registro de Población)
+              </label>
+              <input 
+                type="text" 
+                class="form-control form-control-lg" 
+                id="curp" 
+                name="curp" 
+                placeholder="Ej: ABCD123456HEFGHIJ01"
+                maxlength="18"
+                value="{{ request.form.get('curp', '') }}"
+                required
+                style="text-transform: uppercase;"
+              >
+              <div class="form-text">
+                <i class="fas fa-info-circle me-1"></i>
+                El CURP debe tener exactamente 18 caracteres
+              </div>
+            </div>
+            
+            <div class="d-grid">
+              <button type="submit" class="btn btn-success btn-lg hover-lift">
+                <i class="fas fa-search me-2"></i>
+                Buscar Diploma
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Características principales -->
-<section class="features-section mb-5">
-  <div class="row g-4">
-    <div class="col-12 text-center mb-4">
-      <h2 class="h3 fw-bold text-dark fade-in">¿Qué puedes hacer aquí?</h2>
-      <p class="text-muted fade-in">Descubre las funcionalidades de nuestra plataforma</p>
-    </div>
-
-    <!-- Para Estudiantes -->
-    <div class="col-12 col-lg-6">
-      <div class="card h-100 border-0 fade-in fade-in-delay-1">
-        <div class="card-body p-4">
-          <div class="d-flex align-items-center mb-3">
-            <div class="feature-icon me-3">
-              <i class="fas fa-user-graduate"></i>
+<!-- Resultados de la búsqueda -->
+{% if diploma %}
+<section class="results-section mb-5 fade-in">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+      <div class="card border-0 shadow-lg border-success" style="border-width: 3px !important;">
+        <div class="card-header bg-success text-white p-4">
+          <div class="d-flex align-items-center">
+            <div class="me-3">
+              <i class="fas fa-certificate" style="font-size: 2rem;"></i>
             </div>
-            <h5 class="card-title mb-0 fw-semibold">Para Estudiantes</h5>
-          </div>
-          
-          <p class="text-muted mb-4">
-            Accede fácilmente a tu constancia de capacitación y verifica su autenticidad.
-          </p>
-          
-          <div class="feature-list">
-            <div class="feature-item mb-3">
-              <i class="fas fa-check-circle text-success me-2"></i>
-              <span>Consulta rápida con tu CURP</span>
-            </div>
-            <div class="feature-item mb-3">
-              <i class="fas fa-download text-primary me-2"></i>
-              <span>Descarga tu diploma en PDF</span>
-            </div>
-            <div class="feature-item mb-3">
-              <i class="fas fa-qrcode text-info me-2"></i>
-              <span>Verificación con código QR</span>
-            </div>
-            <div class="feature-item mb-4">
-              <i class="fas fa-shield-alt text-warning me-2"></i>
-              <span>Documento oficialmente válido</span>
+            <div>
+              <h4 class="mb-1">✅ Diploma Encontrado</h4>
+              <p class="mb-0 opacity-75">Documento válido y verificado</p>
             </div>
           </div>
-          
-          <a href="/lookup" class="btn btn-success hover-lift">
-            <i class="fas fa-search me-2"></i>
-            Consultar Diploma
-          </a>
         </div>
-      </div>
-    </div>
-
-    <!-- Para Administradores -->
-    <div class="col-12 col-lg-6">
-      <div class="card h-100 border-0 fade-in fade-in-delay-2">
+        
         <div class="card-body p-4">
-          <div class="d-flex align-items-center mb-3">
-            <div class="feature-icon me-3">
-              <i class="fas fa-user-cog"></i>
+          <!-- Información del estudiante -->
+          <div class="row g-4 mb-4">
+            <div class="col-12 col-md-6">
+              <div class="info-card h-100">
+                <div class="info-header mb-2">
+                  <i class="fas fa-user text-primary me-2"></i>
+                  <span class="fw-semibold">Información del Estudiante</span>
+                </div>
+                <div class="info-content">
+                  <div class="mb-2">
+                    <strong>Nombre:</strong> {{ diploma.nombre }}
+                  </div>
+                  <div class="mb-2">
+                    <strong>CURP:</strong> {{ diploma.curp }}
+                  </div>
+                  <div class="mb-2">
+                    <strong>Grado:</strong> {{ diploma.grado }}
+                  </div>
+                  <div>
+                    <strong>Grupo:</strong> {{ diploma.grupo }}
+                  </div>
+                </div>
+              </div>
             </div>
-            <h5 class="card-title mb-0 fw-semibold">Para Administradores</h5>
+            
+            <div class="col-12 col-md-6">
+              <div class="info-card h-100">
+                <div class="info-header mb-2">
+                  <i class="fas fa-graduation-cap text-info me-2"></i>
+                  <span class="fw-semibold">Información del Curso</span>
+                </div>
+                <div class="info-content">
+                  <div class="mb-2">
+                    <strong>Curso:</strong> {{ curso.nombre }}
+                  </div>
+                  <div class="mb-2">
+                    <strong>Nivel:</strong> {{ curso.nivel }}
+                  </div>
+                  <div class="mb-2">
+                    <strong>Duración:</strong> {{ curso.horas }} horas académicas
+                  </div>
+                  <div>
+                    <strong>Fecha:</strong> {{ diploma.fecha.strftime('%d de %B, %Y') if diploma.fecha else 'No especificada' }}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          
-          <p class="text-muted mb-4">
-            Gestiona escuelas, cursos y genera diplomas de forma masiva y eficiente.
-          </p>
-          
-          <div class="feature-list">
-            <div class="feature-item mb-3">
-              <i class="fas fa-school text-primary me-2"></i>
-              <span>Registro de escuelas y cursos</span>
-            </div>
-            <div class="feature-item mb-3">
-              <i class="fas fa-file-csv text-success me-2"></i>
-              <span>Carga masiva desde CSV</span>
-            </div>
-            <div class="feature-item mb-3">
-              <i class="fas fa-magic text-purple me-2"></i>
-              <span>Generación automática de PDF</span>
-            </div>
-            <div class="feature-item mb-4">
-              <i class="fas fa-chart-line text-info me-2"></i>
-              <span>Panel de control completo</span>
+
+          <!-- Información de la escuela -->
+          <div class="row g-4 mb-4">
+            <div class="col-12">
+              <div class="info-card">
+                <div class="info-header mb-2">
+                  <i class="fas fa-school text-warning me-2"></i>
+                  <span class="fw-semibold">Información de la Institución</span>
+                </div>
+                <div class="info-content">
+                  <div class="row">
+                    <div class="col-md-6 mb-2">
+                      <strong>Escuela:</strong> {{ escuela.nombre }}
+                    </div>
+                    <div class="col-md-3 mb-2">
+                      <strong>CCT:</strong> {{ escuela.cct }}
+                    </div>
+                    <div class="col-md-3 mb-2">
+                      <strong>Turno:</strong> {{ escuela.turno or 'No especificado' }}
+                    </div>
+                    {% if escuela.director %}
+                    <div class="col-md-6 mb-2">
+                      <strong>Director(a):</strong> {{ escuela.director }}
+                    </div>
+                    {% endif %}
+                    {% if escuela.coordinador %}
+                    <div class="col-md-6 mb-2">
+                      <strong>Coordinador(a):</strong> {{ escuela.coordinador }}
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          
-          <a href="/login" class="btn btn-primary hover-lift">
-            <i class="fas fa-sign-in-alt me-2"></i>
-            Acceder al Panel
-          </a>
+
+          <!-- Competencias y módulos -->
+          {% if curso.competencias or curso.modulos %}
+          <div class="row g-4 mb-4">
+            {% if curso.competencias %}
+            <div class="col-12 col-lg-6">
+              <div class="info-card h-100">
+                <div class="info-header mb-2">
+                  <i class="fas fa-list-check text-success me-2"></i>
+                  <span class="fw-semibold">Competencias Desarrolladas</span>
+                </div>
+                <div class="info-content">
+                  <p class="mb-0">{{ curso.competencias }}</p>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+            
+            {% if curso.modulos %}
+            <div class="col-12 col-lg-6">
+              <div class="info-card h-100">
+                <div class="info-header mb-2">
+                  <i class="fas fa-puzzle-piece text-purple me-2"></i>
+                  <span class="fw-semibold">Módulos del Curso</span>
+                </div>
+                <div class="info-content">
+                  <p class="mb-0">{{ curso.modulos }}</p>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          {% endif %}
+
+          <!-- Acciones -->
+          <div class="d-flex flex-column flex-md-row gap-3 justify-content-center pt-3">
+            <a href="/cert/{{ diploma.id }}" 
+               class="btn btn-primary btn-lg hover-lift" 
+               target="_blank">
+              <i class="fas fa-file-pdf me-2"></i>
+              Descargar PDF
+            </a>
+            
+            <button class="btn btn-info btn-lg hover-lift" onclick="showQRModal()">
+              <i class="fas fa-qrcode me-2"></i>
+              Ver Código QR
+            </button>
+            
+            <button class="btn btn-outline-secondary btn-lg hover-lift" onclick="shareResult()">
+              <i class="fas fa-share-alt me-2"></i>
+              Compartir
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Proceso de verificación -->
-<section class="verification-section mb-5">
-  <div class="card border-0 bg-light">
-    <div class="card-body p-4 p-md-5">
-      <div class="text-center mb-5">
-        <h3 class="fw-bold text-dark fade-in">Proceso de Verificación</h3>
-        <p class="text-muted fade-in">Cada diploma incluye elementos de seguridad para garantizar su autenticidad</p>
+<!-- Modal QR Code -->
+<div class="modal fade" id="qrModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-qrcode me-2"></i>
+          Código QR de Verificación
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      
-      <div class="row g-4 align-items-center">
-        <div class="col-12 col-lg-4 text-center fade-in fade-in-delay-1">
-          <div class="verification-step">
-            <div class="step-icon mb-3">
-              <i class="fas fa-qrcode"></i>
-            </div>
-            <h6 class="fw-semibold">Código QR</h6>
-            <p class="small text-muted">Cada diploma incluye un código QR único que permite la verificación instantánea</p>
+      <div class="modal-body text-center">
+        <div class="mb-3">
+          <div id="qrcode" class="d-inline-block p-3 bg-white border rounded"></div>
+        </div>
+        <p class="text-muted">
+          Escanea este código QR para verificar la autenticidad del diploma
+        </p>
+        <div class="alert alert-info">
+          <small>
+            <strong>URL de verificación:</strong><br>
+            <code>{{ request.url_root }}verify/{{ diploma.id }}</code>
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% elif request.method == 'POST' %}
+<!-- Resultado negativo -->
+<section class="results-section mb-5 fade-in">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="card border-0 shadow-lg border-danger" style="border-width: 3px !important;">
+        <div class="card-body p-4 p-md-5 text-center">
+          <div class="mb-4">
+            <i class="fas fa-exclamation-triangle text-danger" style="font-size: 4rem;"></i>
+          </div>
+          <h4 class="text-danger mb-3">❌ Diploma No Encontrado</h4>
+          <p class="text-muted mb-4">
+            No se encontró ningún diploma asociado al CURP: 
+            <strong>{{ request.form.get('curp', '') }}</strong>
+          </p>
+          <div class="alert alert-warning">
+            <h6 class="alert-heading">Posibles razones:</h6>
+            <ul class="mb-0 text-start">
+              <li>El CURP ingresado es incorrecto</li>
+              <li>El diploma aún no ha sido registrado en el sistema</li>
+              <li>No has completado ningún curso de computación</li>
+            </ul>
+          </div>
+          <div class="d-flex gap-2 justify-content-center">
+            <button onclick="window.location.reload()" class="btn btn-primary">
+              <i class="fas fa-redo me-2"></i>
+              Intentar Nuevamente
+            </button>
+            <a href="/" class="btn btn-outline-secondary">
+              <i class="fas fa-home me-2"></i>
+              Volver al Inicio
+            </a>
           </div>
         </div>
-        
-        <div class="col-12 col-lg-4 text-center fade-in fade-in-delay-2">
-          <div class="verification-step">
-            <div class="step-icon mb-3">
-              <i class="fas fa-fingerprint"></i>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Información adicional -->
+<section class="info-section mb-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="card bg-light border-0">
+        <div class="card-body p-4">
+          <h5 class="mb-3">
+            <i class="fas fa-info-circle text-info me-2"></i>
+            Información Importante
+          </h5>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="d-flex">
+                <i class="fas fa-shield-alt text-success me-2 mt-1"></i>
+                <div>
+                  <strong>Documentos Oficiales</strong>
+                  <p class="small text-muted mb-0">Todos los diplomas son documentos oficialmente válidos</p>
+                </div>
+              </div>
             </div>
-            <h6 class="fw-semibold">Hash de Seguridad</h6>
-            <p class="small text-muted">Algoritmo criptográfico que garantiza la integridad de los datos del diploma</p>
+            <div class="col-md-6">
+              <div class="d-flex">
+                <i class="fas fa-clock text-warning me-2 mt-1"></i>
+                <div>
+                  <strong>Disponibilidad 24/7</strong>
+                  <p class="small text-muted mb-0">Accede a tu diploma en cualquier momento</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="d-flex">
+                <i class="fas fa-lock text-primary me-2 mt-1"></i>
+                <div>
+                  <strong>Datos Seguros</strong>
+                  <p class="small text-muted mb-0">Tu información está protegida y encriptada</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="d-flex">
+                <i class="fas fa-phone text-info me-2 mt-1"></i>
+                <div>
+                  <strong>Soporte Técnico</strong>
+                  <p class="small text-muted mb-0">¿Problemas? Contacta al administrador</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        
-        <div class="col-12 col-lg-4 text-center fade-in fade-in-delay-3">
-          <div class="verification-step">
-            <div class="step-icon mb-3">
-              <i class="fas fa-certificate"></i>
-            </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// Validación de CURP en tiempo real
+document.getElementById('curp').addEventListener('input', function(e) {
+    const curp = e.target.value.toUpperCase();
+    e.target.value = curp;
+    
+    // Validación básica de formato CURP
+    const curpPattern = /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[0-9A-Z][0-9]$/;
+    
+    if (curp.length === 18) {
+        if (curpPattern.test(curp)) {
+            e.target.classList.remove('is-invalid');
+            e.target.classList.add('is-valid');
+        } else {
+            e.target.classList.remove('is-valid');
+            e.target.classList.add('is-invalid');
+        }
+    } else {
+        e.target.classList.remove('is-valid', 'is-invalid');
+    }
+});
+
+// Función para mostrar modal QR
+function showQRModal() {
+    {% if diploma %}
+    const modal = new bootstrap.Modal(document.getElementById('qrModal'));
+    
+    // Limpiar QR anterior
+    document.getElementById('qrcode').innerHTML = '';
+    
+    // Generar nuevo QR (necesitas incluir una librería QR como qrious o qrcode.js)
+    const qr = new QRCode(document.getElementById('qrcode'), {
+        text: '{{ request.url_root }}verify/{{ diploma.id }}',
+        width: 200,
+        height: 200,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+    });
+    
+    modal.show();
+    {% endif %}
+}
+
+// Función para compartir resultado
+function shareResult() {
+    {% if diploma %}
+    if (navigator.share) {
+        navigator.share({
+            title: 'Mi Diploma de Computación',
+            text: 'He completado exitosamente el curso: {{ curso.nombre }}',
+            url: window.location.href
+        });
+    } else {
+        // Fallback para navegadores que no soportan Web Share API
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            alert('Enlace copiado al portapapeles');
+        });
+    }
+    {% endif %}
+}
+
+// Animaciones al cargar
+document.addEventListener('DOMContentLoaded', function() {
+    // Hacer scroll suave al resultado si existe
+    {% if diploma or request.method == 'POST' %}
+    document.querySelector('.results-section').scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+    });
+    {% endif %}
+});
+</script>
+
+{% endblock %}

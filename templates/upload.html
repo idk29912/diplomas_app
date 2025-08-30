@@ -1,111 +1,825 @@
 {% extends "layout.html" %}
-{% block title %}Panel · Diplomas{% endblock %}
+{% block title %}Panel Administrativo · Sistema de Diplomas{% endblock %}
 {% block content %}
-<div class="row g-4">
-  <!-- Registrar escuela -->
-  <div class="col-12 col-lg-4">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h5 class="mb-3">1) Registrar Escuela</h5>
-        <form method="post" class="row g-2">
-          <input type="hidden" name="action" value="create_school">
-          <div class="col-12">
-            <label class="form-label">Nombre oficial</label>
-            <input class="form-control" name="nombre" placeholder="Escuela Primaria..." required>
+
+<!-- Hero Section del Panel -->
+<section class="hero-section text-center mb-5 fade-in">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="hero-content">
+        <div class="hero-icon mb-4">
+          <div class="d-inline-flex align-items-center justify-content-center position-relative"
+               style="width: 100px; height: 100px; background: var(--gradient-primary); border-radius: 50%;">
+            <i class="fas fa-cog text-white" style="font-size: 2.5rem;"></i>
           </div>
-          <div class="col-6">
-            <label class="form-label">CCT</label>
-            <input class="form-control" name="cct" placeholder="00XXX0000X" required>
-          </div>
-          <div class="col-6">
-            <label class="form-label">Turno</label>
-            <input class="form-control" name="turno" placeholder="Matutino">
-          </div>
-          <div class="col-6">
-            <label class="form-label">Director(a)</label>
-            <input class="form-control" name="director" placeholder="Nombre del director">
-          </div>
-          <div class="col-6">
-            <label class="form-label">Coordinador(a)</label>
-            <input class="form-control" name="coordinador" placeholder="Nombre del coordinador">
-          </div>
-          <div class="col-12 d-grid">
-            <button class="btn btn-primary">Guardar escuela</button>
-          </div>
-        </form>
+        </div>
+        <h1 class="display-5 fw-bold text-dark mb-3">
+          Panel <span class="text-gradient">Administrativo</span>
+        </h1>
+        <p class="lead text-muted mb-4">
+          Gestiona escuelas, cursos y genera diplomas de forma eficiente
+        </p>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- Registrar curso -->
-  <div class="col-12 col-lg-4">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h5 class="mb-3">2) Registrar Curso</h5>
-        <form method="post" class="row g-2">
-          <input type="hidden" name="action" value="create_course">
-          <div class="col-12">
-            <label class="form-label">Nombre del curso</label>
-            <input class="form-control" name="c_nombre" placeholder="Computación Básica" required>
-          </div>
-          <div class="col-6">
-            <label class="form-label">Nivel</label>
-            <input class="form-control" name="c_nivel" placeholder="Inicial/Intermedio/Avanzado" required>
-          </div>
-          <div class="col-6">
-            <label class="form-label">Horas</label>
-            <input class="form-control" name="c_horas" placeholder="30" required>
-          </div>
-          <div class="col-12">
-            <label class="form-label">Competencias</label>
-            <textarea class="form-control" name="c_competencias" placeholder="Uso básico de PC; Paint; Guardar archivos"></textarea>
-          </div>
-          <div class="col-12">
-            <label class="form-label">Módulos</label>
-            <textarea class="form-control" name="c_modulos" placeholder="Intro PC; Teclado; Paint"></textarea>
-          </div>
-          <div class="col-12 d-grid">
-            <button class="btn btn-primary">Guardar curso</button>
-          </div>
-        </form>
+<!-- Alertas de estado -->
+{% if not has_school %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  <i class="fas fa-exclamation-triangle me-2"></i>
+  <strong>¡Atención!</strong> No tienes escuelas registradas. Registra al menos una escuela para continuar.
+  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+
+{% if not has_course %}
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+  <i class="fas fa-info-circle me-2"></i>
+  <strong>Información:</strong> No tienes cursos registrados. Registra al menos un curso para generar diplomas.
+  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+
+<!-- Mensajes Flash -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+        <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-circle' }} me-2"></i>
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
-    </div>
-  </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
-  <!-- Cargar CSV y generar -->
-  <div class="col-12 col-lg-4">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h5 class="mb-3">3) Cargar CSV y Generar</h5>
-        {% if not has_school or not has_course %}
-          <div class="alert alert-warning">Primero registra al menos una escuela y un curso.</div>
-        {% endif %}
-        <form method="post" enctype="multipart/form-data" class="row g-2">
-          <input type="hidden" name="action" value="upload_csv">
-          <div class="col-12">
-            <label class="form-label">Escuela (ID)</label>
-            <input class="form-control" name="school_id" placeholder="1" required>
-          </div>
-          <div class="col-12">
-            <label class="form-label">Curso (ID)</label>
-            <input class="form-control" name="course_id" placeholder="1" required>
-          </div>
-          <div class="col-12">
-            <label class="form-label">Fecha (YYYY-MM-DD)</label>
-            <input class="form-control" name="fecha" placeholder="2025-07-10" required>
-          </div>
-          <div class="col-12">
-            <label class="form-label">Archivo CSV</label>
-            <input class="form-control" type="file" name="csv" accept=".csv" required>
-          </div>
-          <div class="col-12 d-grid">
-            <button class="btn btn-success" {% if not has_school or not has_course %}disabled{% endif %}>Generar Diplomas</button>
-          </div>
-        </form>
-        <hr>
-        <p class="small text-muted">Formato CSV: <code>curp,nombre,grado,grupo</code></p>
+<!-- Pasos del proceso -->
+<div class="row g-4 mb-5">
+  <div class="col-12">
+    <div class="process-steps d-flex justify-content-between mb-4">
+      <div class="step-item {{ 'active' if has_school else '' }}">
+        <div class="step-number">1</div>
+        <div class="step-title">Registrar Escuela</div>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-item {{ 'active' if has_course else '' }}">
+        <div class="step-number">2</div>
+        <div class="step-title">Registrar Curso</div>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-item {{ 'active' if has_school and has_course else '' }}">
+        <div class="step-number">3</div>
+        <div class="step-title">Generar Diplomas</div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Formularios principales -->
+<div class="row g-4 mb-5">
+  <!-- 1. Registrar escuela -->
+  <div class="col-12 col-lg-4">
+    <div class="card shadow-lg border-0 h-100">
+      <div class="card-header bg-primary text-white">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-school me-2"></i>
+          1) Registrar Escuela
+        </h5>
+      </div>
+      <div class="card-body">
+        <form method="post" class="row g-3" id="schoolForm">
+          <input type="hidden" name="action" value="create_school">
+          
+          <div class="col-12">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-building me-1"></i>
+              Nombre oficial
+            </label>
+            <input class="form-control" name="nombre" placeholder="Ej: Escuela Primaria Benito Juárez" required>
+            <div class="form-text">Nombre completo de la institución educativa</div>
+          </div>
+          
+          <div class="col-6">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-id-badge me-1"></i>
+              CCT
+            </label>
+            <input class="form-control" name="cct" placeholder="00XXX0000X" maxlength="10" required>
+            <div class="form-text">Clave del Centro de Trabajo</div>
+          </div>
+          
+          <div class="col-6">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-clock me-1"></i>
+              Turno
+            </label>
+            <select class="form-select" name="turno">
+              <option value="">Seleccionar turno</option>
+              <option value="Matutino">Matutino</option>
+              <option value="Vespertino">Vespertino</option>
+              <option value="Nocturno">Nocturno</option>
+              <option value="Continuo">Continuo</option>
+            </select>
+          </div>
+          
+          <div class="col-12">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-user-tie me-1"></i>
+              Director(a)
+            </label>
+            <input class="form-control" name="director" placeholder="Nombre completo del director">
+          </div>
+          
+          <div class="col-12">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-user-cog me-1"></i>
+              Coordinador(a)
+            </label>
+            <input class="form-control" name="coordinador" placeholder="Nombre completo del coordinador">
+          </div>
+          
+          <div class="col-12 d-grid">
+            <button class="btn btn-primary btn-lg hover-lift">
+              <i class="fas fa-save me-2"></i>
+              Guardar Escuela
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Registrar curso -->
+  <div class="col-12 col-lg-4">
+    <div class="card shadow-lg border-0 h-100">
+      <div class="card-header bg-info text-white">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-graduation-cap me-2"></i>
+          2) Registrar Curso
+        </h5>
+      </div>
+      <div class="card-body">
+        <form method="post" class="row g-3" id="courseForm">
+          <input type="hidden" name="action" value="create_course">
+          
+          <div class="col-12">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-book me-1"></i>
+              Nombre del curso
+            </label>
+            <input class="form-control" name="c_nombre" placeholder="Ej: Computación Básica" required>
+            <div class="form-text">Título del curso de capacitación</div>
+          </div>
+          
+          <div class="col-6">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-signal me-1"></i>
+              Nivel
+            </label>
+            <select class="form-select" name="c_nivel" required>
+              <option value="">Seleccionar nivel</option>
+              <option value="Inicial">Inicial</option>
+              <option value="Intermedio">Intermedio</option>
+              <option value="Avanzado">Avanzado</option>
+            </select>
+          </div>
+          
+          <div class="col-6">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-hourglass-half me-1"></i>
+              Horas
+            </label>
+            <input type="number" class="form-control" name="c_horas" placeholder="30" min="1" max="999" required>
+            <div class="form-text">Duración en horas académicas</div>
+          </div>
+          
+          <div class="col-12">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-list-check me-1"></i>
+              Competencias desarrolladas
+            </label>
+            <textarea class="form-control" name="c_competencias" rows="3" 
+                      placeholder="Ej: Uso básico de PC, manejo de Paint, guardado de archivos"></textarea>
+            <div class="form-text">Habilidades que desarrollará el estudiante</div>
+          </div>
+          
+          <div class="col-12">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-puzzle-piece me-1"></i>
+              Módulos del curso
+            </label>
+            <textarea class="form-control" name="c_modulos" rows="3" 
+                      placeholder="Ej: Introducción a PC, uso de teclado, manejo de Paint"></textarea>
+            <div class="form-text">Temario o módulos incluidos</div>
+          </div>
+          
+          <div class="col-12 d-grid">
+            <button class="btn btn-info btn-lg hover-lift">
+              <i class="fas fa-save me-2"></i>
+              Guardar Curso
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Cargar CSV y generar -->
+  <div class="col-12 col-lg-4">
+    <div class="card shadow-lg border-0 h-100">
+      <div class="card-header bg-success text-white">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-file-csv me-2"></i>
+          3) Generar Diplomas
+        </h5>
+      </div>
+      <div class="card-body">
+        {% if not has_school or not has_course %}
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            Primero registra al menos una escuela y un curso.
+          </div>
+        {% endif %}
+        
+        <form method="post" enctype="multipart/form-data" class="row g-3" id="uploadForm">
+          <input type="hidden" name="action" value="upload_csv">
+          
+          <div class="col-12">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-school me-1"></i>
+              Escuela
+            </label>
+            <select class="form-select" name="school_id" required {% if not has_school %}disabled{% endif %}>
+              <option value="">Seleccionar escuela</option>
+              {% if escuelas %}
+                {% for escuela in escuelas %}
+                  <option value="{{ escuela.id }}">{{ escuela.nombre }} ({{ escuela.cct }})</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+          
+          <div class="col-12">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-graduation-cap me-1"></i>
+              Curso
+            </label>
+            <select class="form-select" name="course_id" required {% if not has_course %}disabled{% endif %}>
+              <option value="">Seleccionar curso</option>
+              {% if cursos %}
+                {% for curso in cursos %}
+                  <option value="{{ curso.id }}">{{ curso.nombre }} ({{ curso.nivel }} - {{ curso.horas }}h)</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+          
+          <div class="col-12">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-calendar me-1"></i>
+              Fecha de emisión
+            </label>
+            <input type="date" class="form-control" name="fecha" value="{{ today }}" required {% if not has_school or not has_course %}disabled{% endif %}>
+            <div class="form-text">Fecha en que se completó el curso</div>
+          </div>
+          
+          <div class="col-12">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-file-csv me-1"></i>
+              Archivo CSV
+            </label>
+            <input class="form-control" type="file" name="csv" accept=".csv" required {% if not has_school or not has_course %}disabled{% endif %}>
+            <div class="form-text">
+              <i class="fas fa-info-circle me-1"></i>
+              Debe contener: curp, nombre, grado, grupo
+            </div>
+          </div>
+          
+          <div class="col-12">
+            <div class="card bg-light">
+              <div class="card-body p-3">
+                <h6 class="card-title">
+                  <i class="fas fa-table me-2"></i>
+                  Formato del CSV requerido:
+                </h6>
+                <div class="table-responsive">
+                  <table class="table table-sm mb-0">
+                    <thead>
+                      <tr class="table-dark">
+                        <th>curp</th>
+                        <th>nombre</th>
+                        <th>grado</th>
+                        <th>grupo</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><code>ABCD123456HEFGHIJ01</code></td>
+                        <td><code>Juan Pérez García</code></td>
+                        <td><code>5°</code></td>
+                        <td><code>A</code></td>
+                      </tr>
+                      <tr>
+                        <td><code>WXYZ789012MEFGHIJ02</code></td>
+                        <td><code>María López Silva</code></td>
+                        <td><code>6°</code></td>
+                        <td><code>B</code></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="mt-2">
+                  <small class="text-muted">
+                    <i class="fas fa-download me-1"></i>
+                    <a href="/template-csv" class="text-decoration-none">Descargar plantilla CSV</a>
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-12 d-grid">
+            <button class="btn btn-success btn-lg hover-lift" 
+                    {% if not has_school or not has_course %}disabled{% endif %}
+                    onclick="return confirmGeneration()">
+              <i class="fas fa-magic me-2"></i>
+              Generar Diplomas
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Resumen de registros existentes -->
+<div class="row g-4 mb-5">
+  <!-- Escuelas registradas -->
+  <div class="col-12 col-lg-6">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-light">
+        <h6 class="card-title mb-0">
+          <i class="fas fa-school text-primary me-2"></i>
+          Escuelas Registradas ({{ escuelas|length if escuelas else 0 }})
+        </h6>
+      </div>
+      <div class="card-body p-0">
+        {% if escuelas %}
+          <div class="list-group list-group-flush">
+            {% for escuela in escuelas %}
+            <div class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">{{ escuela.nombre }}</div>
+                <small class="text-muted">
+                  CCT: {{ escuela.cct }} 
+                  {% if escuela.turno %}| {{ escuela.turno }}{% endif %}
+                </small>
+                {% if escuela.director %}
+                <br><small class="text-muted">Dir: {{ escuela.director }}</small>
+                {% endif %}
+              </div>
+              <span class="badge bg-primary rounded-pill">ID: {{ escuela.id }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="p-4 text-center text-muted">
+            <i class="fas fa-inbox" style="font-size: 3rem; opacity: 0.3;"></i>
+            <p class="mt-2 mb-0">No hay escuelas registradas</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Cursos registrados -->
+  <div class="col-12 col-lg-6">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-light">
+        <h6 class="card-title mb-0">
+          <i class="fas fa-graduation-cap text-info me-2"></i>
+          Cursos Registrados ({{ cursos|length if cursos else 0 }})
+        </h6>
+      </div>
+      <div class="card-body p-0">
+        {% if cursos %}
+          <div class="list-group list-group-flush">
+            {% for curso in cursos %}
+            <div class="list-group-item">
+              <div class="d-flex w-100 justify-content-between">
+                <h6 class="mb-1">{{ curso.nombre }}</h6>
+                <span class="badge bg-info rounded-pill">ID: {{ curso.id }}</span>
+              </div>
+              <p class="mb-1">
+                <span class="badge bg-secondary me-1">{{ curso.nivel }}</span>
+                <span class="badge bg-warning text-dark">{{ curso.horas }} horas</span>
+              </p>
+              {% if curso.competencias %}
+              <small class="text-muted">{{ curso.competencias[:50] }}{% if curso.competencias|length > 50 %}...{% endif %}</small>
+              {% endif %}
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="p-4 text-center text-muted">
+            <i class="fas fa-inbox" style="font-size: 3rem; opacity: 0.3;"></i>
+            <p class="mt-2 mb-0">No hay cursos registrados</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Estadísticas -->
+<div class="row g-4 mb-5">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-light">
+        <h6 class="card-title mb-0">
+          <i class="fas fa-chart-bar text-success me-2"></i>
+          Estadísticas del Sistema
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row g-3 text-center">
+          <div class="col-6 col-md-3">
+            <div class="stat-card">
+              <div class="stat-icon text-primary mb-2">
+                <i class="fas fa-school" style="font-size: 2rem;"></i>
+              </div>
+              <div class="stat-number">{{ escuelas|length if escuelas else 0 }}</div>
+              <div class="stat-label">Escuelas</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card">
+              <div class="stat-icon text-info mb-2">
+                <i class="fas fa-graduation-cap" style="font-size: 2rem;"></i>
+              </div>
+              <div class="stat-number">{{ cursos|length if cursos else 0 }}</div>
+              <div class="stat-label">Cursos</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card">
+              <div class="stat-icon text-success mb-2">
+                <i class="fas fa-certificate" style="font-size: 2rem;"></i>
+              </div>
+              <div class="stat-number">{{ total_diplomas if total_diplomas else 0 }}</div>
+              <div class="stat-label">Diplomas</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card">
+              <div class="stat-icon text-warning mb-2">
+                <i class="fas fa-users" style="font-size: 2rem;"></i>
+              </div>
+              <div class="stat-number">{{ total_estudiantes if total_estudiantes else 0 }}</div>
+              <div class="stat-label">Estudiantes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+          Confirmar Generación de Diplomas
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Estás seguro de que deseas generar los diplomas con la siguiente información?</p>
+        <div id="confirmDetails" class="bg-light p-3 rounded"></div>
+        <div class="alert alert-info mt-3">
+          <i class="fas fa-info-circle me-2"></i>
+          <strong>Importante:</strong> Esta acción generará diplomas para todos los estudiantes en el archivo CSV.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" onclick="submitUploadForm()">
+          <i class="fas fa-check me-2"></i>
+          Confirmar y Generar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+:root {
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-success: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+}
+
+.text-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-success {
+  background: var(--gradient-success);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease-in;
+}
+
+.fade-in-delay-1 {
+  animation: fadeIn 0.8s ease-in 0.2s both;
+}
+
+.fade-in-delay-2 {
+  animation: fadeIn 0.8s ease-in 0.4s both;
+}
+
+.fade-in-delay-3 {
+  animation: fadeIn 0.8s ease-in 0.6s both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.process-steps {
+  position: relative;
+}
+
+.step-item {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e9ecef;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin: 0 auto 8px;
+  transition: all 0.3s ease;
+}
+
+.step-item.active .step-number {
+  background: var(--gradient-primary);
+  color: white;
+}
+
+.step-title {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.step-item.active .step-title {
+  color: #495057;
+  font-weight: 600;
+}
+
+.step-connector {
+  flex: 1;
+  height: 2px;
+  background: #e9ecef;
+  margin: 20px 15px 0;
+  position: relative;
+}
+
+.feature-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.stat-card {
+  padding: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #495057;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.info-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.info-header {
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 8px;
+}
+
+.text-purple {
+  color: #6f42c1 !important;
+}
+</style>
+
+<script>
+// Validación de formularios en tiempo real
+document.addEventListener('DOMContentLoaded', function() {
+    // Validación de CCT
+    const cctInput = document.querySelector('input[name="cct"]');
+    if (cctInput) {
+        cctInput.addEventListener('input', function(e) {
+            const cct = e.target.value.toUpperCase();
+            e.target.value = cct;
+            
+            // Formato básico: 2 números + 3 letras + 4 números + 1 letra/número
+            const cctPattern = /^[0-9]{2}[A-Z]{3}[0-9]{4}[A-Z0-9]$/;
+            
+            if (cct.length === 10) {
+                if (cctPattern.test(cct)) {
+                    e.target.classList.remove('is-invalid');
+                    e.target.classList.add('is-valid');
+                } else {
+                    e.target.classList.remove('is-valid');
+                    e.target.classList.add('is-invalid');
+                }
+            } else {
+                e.target.classList.remove('is-valid', 'is-invalid');
+            }
+        });
+    }
+    
+    // Validación de archivo CSV
+    const csvInput = document.querySelector('input[name="csv"]');
+    if (csvInput) {
+        csvInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.type !== 'text/csv' && !file.name.toLowerCase().endsWith('.csv')) {
+                    alert('Por favor, selecciona un archivo CSV válido.');
+                    e.target.value = '';
+                    return;
+                }
+                
+                if (file.size > 5 * 1024 * 1024) { // 5MB max
+                    alert('El archivo es demasiado grande. Máximo 5MB.');
+                    e.target.value = '';
+                    return;
+                }
+            }
+        });
+    }
+    
+    // Auto-rellenar fecha actual
+    const fechaInput = document.querySelector('input[name="fecha"]');
+    if (fechaInput && !fechaInput.value) {
+        const today = new Date().toISOString().split('T')[0];
+        fechaInput.value = today;
+    }
+});
+
+// Función de confirmación antes de generar diplomas
+function confirmGeneration() {
+    const form = document.getElementById('uploadForm');
+    const formData = new FormData(form);
+    
+    // Validar que todos los campos estén llenos
+    const schoolSelect = form.querySelector('[name="school_id"]');
+    const courseSelect = form.querySelector('[name="course_id"]');
+    const fechaInput = form.querySelector('[name="fecha"]');
+    const csvInput = form.querySelector('[name="csv"]');
+    
+    if (!schoolSelect.value || !courseSelect.value || !fechaInput.value || !csvInput.files[0]) {
+        alert('Por favor, completa todos los campos antes de continuar.');
+        return false;
+    }
+    
+    // Preparar detalles para mostrar en el modal
+    const schoolText = schoolSelect.options[schoolSelect.selectedIndex].text;
+    const courseText = courseSelect.options[courseSelect.selectedIndex].text;
+    const fecha = fechaInput.value;
+    const fileName = csvInput.files[0].name;
+    
+    const confirmDetails = document.getElementById('confirmDetails');
+    confirmDetails.innerHTML = `
+        <div class="row g-2">
+            <div class="col-12"><strong>Escuela:</strong> ${schoolText}</div>
+            <div class="col-12"><strong>Curso:</strong> ${courseText}</div>
+            <div class="col-12"><strong>Fecha:</strong> ${fecha}</div>
+            <div class="col-12"><strong>Archivo:</strong> ${fileName}</div>
+        </div>
+    `;
+    
+    // Mostrar modal de confirmación
+    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    modal.show();
+    
+    return false; // Prevenir envío inmediato
+}
+
+// Enviar formulario después de confirmación
+function submitUploadForm() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('confirmModal'));
+    modal.hide();
+    
+    // Mostrar indicador de carga
+    const submitBtn = document.querySelector('#uploadForm button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generando...';
+    submitBtn.disabled = true;
+    
+    // Enviar formulario
+    document.getElementById('uploadForm').submit();
+}
+
+// Función para resetear formularios
+function resetForm(formId) {
+    const form = document.getElementById(formId);
+    if (form) {
+        form.reset();
+        // Limpiar clases de validación
+        form.querySelectorAll('.is-valid, .is-invalid').forEach(el => {
+            el.classList.remove('is-valid', 'is-invalid');
+        });
+    }
+}
+
+// Función para validar formulario antes de envío
+function validateForm(formId) {
+    const form = document.getElementById(formId);
+    let isValid = true;
+    
+    // Validar campos requeridos
+    form.querySelectorAll('[required]').forEach(field => {
+        if (!field.value.trim()) {
+            field.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+        }
+    });
+    
+    return isValid;
+}
+
+// Event listeners para los formularios
+document.getElementById('schoolForm').addEventListener('submit', function(e) {
+    if (!validateForm('schoolForm')) {
+        e.preventDefault();
+        alert('Por favor, completa todos los campos requeridos.');
+    }
+});
+
+document.getElementById('courseForm').addEventListener('submit', function(e) {
+    if (!validateForm('courseForm')) {
+        e.preventDefault();
+        alert('Por favor, completa todos los campos requeridos.');
+    }
+});
+</script>
+
 {% endblock %}

@@ -6,3 +6,7 @@ instance/
 .generated/
 generated/
 .vscode/
+# Ignorar base de datos local y diplomas generados
+instance/*.db
+generated/*.pdf
+__pycache__/
